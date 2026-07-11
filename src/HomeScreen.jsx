@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { History, Home } from "lucide-react";
+import { History, Home, ArrowLeft } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -36,10 +36,10 @@ export default function HomeScreen() {
         className="px-5 py-4 flex items-center justify-between"
         style={{ background: "linear-gradient(135deg, #4C1D95 0%, #7C3AED 60%, #A855F7 100%)" }}
       >
-        <div className="flex items-center gap-2.5">
-          <img src="/tailor-icon.png" alt="" className="w-8 h-8" />
+        <div className="flex items-center gap-3">
+          <img src="/tailor-icon.png" alt="" className="w-12 h-12" />
           <div>
-            <h1 className="text-lg font-bold tracking-tight text-white leading-tight">
+            <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">
               AI Resume{" "}
               <span className="relative inline-block">
                 Tailor
@@ -68,10 +68,10 @@ export default function HomeScreen() {
       {/* Content */}
       <div className="px-5 py-6 space-y-6 flex-1 pb-24">
         <section>
-          <h2 className="text-2xl font-semibold tracking-tight" style={{ color: theme.foreground }}>
+          <h2 className="text-3xl font-semibold tracking-tight" style={{ color: theme.foreground }}>
             Welcome back.
           </h2>
-          <p className="text-sm mt-1" style={{ color: theme.mutedForeground }}>
+          <p className="text-base mt-1" style={{ color: theme.mutedForeground }}>
             Let's refine your career narrative.
           </p>
         </section>
@@ -86,17 +86,17 @@ export default function HomeScreen() {
               className="absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity"
               style={{ background: `linear-gradient(135deg, ${theme.primaryDark}, ${theme.primary} 60%, #A855F7)` }}
             />
-            <div className="relative px-4 py-8 flex flex-col items-center justify-center gap-3">
+            <div className="relative px-6 py-12 flex flex-col items-center justify-center gap-4">
               <motion.div
-                className="w-14 h-14 flex items-center justify-center overflow-hidden"
+                className="w-24 h-24 flex items-center justify-center overflow-hidden"
                 animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <img src="/tailor-icon.png" alt="" className="w-14 h-14" style={{ objectFit: "contain" }} />
+                <img src="/tailor-icon.png" alt="" className="w-24 h-24" style={{ objectFit: "contain" }} />
               </motion.div>
               <div className="text-center">
-                <h3 className="font-semibold text-base text-white">Tailor to JD</h3>
-                <p className="text-xs mt-0.5 text-white/80">
+                <h3 className="font-semibold text-xl text-white">Tailor to JD</h3>
+                <p className="text-sm mt-0.5 text-white/80">
                   AI-powered optimization
                 </p>
               </div>
@@ -105,9 +105,29 @@ export default function HomeScreen() {
         </section>
       </div>
 
+      {/* Back to login - matches splash screen's arrow style */}
+      <motion.button
+        onClick={() => navigate("/login")}
+        whileTap={{ scale: 0.9 }}
+        whileHover={{ x: -4 }}
+        className="fixed flex items-center justify-center rounded-full"
+        style={{
+          bottom: "96px",
+          right: "24px",
+          width: "52px",
+          height: "52px",
+          border: `3px solid ${theme.primary}`,
+          backgroundColor: "rgba(124,58,237,0.08)",
+          zIndex: 20,
+        }}
+        aria-label="Back to login"
+      >
+        <ArrowLeft size={22} strokeWidth={2.75} color={theme.primary} />
+      </motion.button>
+
       {/* Bottom nav */}
       <nav
-        className="fixed bottom-0 w-full h-16 flex justify-around items-center border-t"
+        className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
         style={{ backgroundColor: theme.card + "f2", backdropFilter: "blur(8px)", borderColor: theme.border }}
       >
         {NAV_ITEMS.map((item) => {
@@ -117,7 +137,7 @@ export default function HomeScreen() {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center gap-1"
+              className="flex flex-col items-center gap-1.5"
               style={{ color: isActive ? theme.primary : theme.mutedForeground }}
             >
               {item.image ? (
@@ -126,19 +146,19 @@ export default function HomeScreen() {
                   alt=""
                   className="rounded-full"
                   style={{
-                    width: "26px",
-                    height: "26px",
+                    width: "38px",
+                    height: "38px",
                     objectFit: "cover",
-                    border: `2px solid ${theme.primary}`,
+                    border: `3px solid ${theme.primary}`,
                     opacity: isActive ? 1 : 0.55,
                   }}
                   animate={isActive ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                   transition={{ duration: 0.5 }}
                 />
               ) : (
-                <Icon size={26} style={{ border: `2px solid ${theme.primary}`, borderRadius: "9999px", padding: "3px" }} />
+                <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
               )}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}

@@ -9,13 +9,11 @@ const theme = {
   card: "#FFFFFF",
   primary: "#7C3AED",
   primaryDark: "#3B0764",
-  accentYellow: "#FBBF24",
   secondary: "#F3F0FF",
   mutedForeground: "#6B7280",
   border: "#E5E7EB",
   success: "#10B981",
-  radius: "0.75rem",
-  fontHeading: "'Poppins', 'Inter', sans-serif",
+  radius: "0.5rem",
   fontSans: "'Inter', sans-serif",
 };
 
@@ -24,13 +22,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function ResultsScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { tailoredResume, originalResume, jobDescription } = location.state || {};
+  const { tailoredResume, originalResume } = location.state || {};
   const [resumeText, setResumeText] = useState(tailoredResume || "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [exporting, setExporting] = useState(false);
-
-  const jobTitle = "Tailored Resume";
 
   const handleSave = async () => {
     setSaving(true);
@@ -75,15 +71,15 @@ export default function ResultsScreen() {
   if (!tailoredResume) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center p-6 text-center"
+        className="min-h-screen flex flex-col items-center justify-center p-5 text-center"
         style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
       >
-        <p style={{ color: theme.mutedForeground }}>
+        <p className="text-sm" style={{ color: theme.mutedForeground }}>
           No tailored resume found. Please go back and try again.
         </p>
         <button
           onClick={() => navigate("/tailor")}
-          className="mt-4 px-6 py-3 font-medium"
+          className="mt-3 px-5 py-2.5 text-sm font-medium"
           style={{ backgroundColor: theme.primary, color: "#fff", borderRadius: theme.radius }}
         >
           Back to Tailor
@@ -97,21 +93,20 @@ export default function ResultsScreen() {
       className="min-h-screen flex flex-col"
       style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
     >
-      {/* Header */}
       <header
-        className="border-b px-4 py-3 flex items-center justify-between"
+        className="border-b px-3.5 py-2.5 flex items-center justify-between"
         style={{ backgroundColor: theme.card, borderColor: theme.border }}
       >
         <div className="flex items-center gap-2">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: theme.secondary }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+            style={{ backgroundColor: theme.secondary, border: `1.5px solid ${theme.primary}` }}
           >
-            <Sparkles size={16} style={{ color: theme.primary }} />
+            <img src="/tailor-icon.png" alt="" className="w-7 h-7" style={{ objectFit: "contain" }} />
           </div>
           <div>
-            <h2 className="text-sm font-semibold" style={{ color: theme.foreground }}>
-              {jobTitle}
+            <h2 className="text-xs font-semibold" style={{ color: theme.foreground }}>
+              Tailored Resume
             </h2>
             <div className="text-[10px] flex items-center gap-1" style={{ color: theme.mutedForeground }}>
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: theme.success }} />
@@ -120,49 +115,53 @@ export default function ResultsScreen() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-3 py-1.5 text-xs font-medium flex items-center gap-1"
+            className="px-2.5 py-1 text-xs font-medium flex items-center gap-1"
             style={{ backgroundColor: theme.secondary, color: theme.primary, borderRadius: theme.radius }}
           >
             {saving ? (
-              <Loader2 size={14} className="animate-spin" />
+              <Loader2 size={12} className="animate-spin" />
             ) : saved ? (
-              <Check size={14} />
+              <Check size={12} />
             ) : null}
             {saved ? "Saved" : "Save"}
           </button>
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="px-4 py-1.5 text-sm font-medium flex items-center gap-1.5"
+            className="px-3 py-1 text-xs font-medium flex items-center gap-1"
             style={{
               background: `linear-gradient(135deg, ${theme.primaryDark}, ${theme.primary})`,
               color: "#fff",
               borderRadius: theme.radius,
             }}
           >
-            {exporting ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+            {exporting ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
             Export
           </button>
         </div>
       </header>
 
-      {/* Editable tailored resume */}
-      <main className="flex-1 overflow-y-auto p-4">
+      <main className="flex-1 overflow-y-auto p-3.5">
+        <div className="flex items-center gap-1.5 mb-2">
+          <img src="/tailor-icon.png" alt="" className="w-5 h-5 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
+          <span className="text-xs font-medium" style={{ color: theme.mutedForeground }}>Tailored Resume</span>
+        </div>
         <textarea
           value={resumeText}
           onChange={(e) => setResumeText(e.target.value)}
-          className="w-full h-full text-sm outline-none resize-none"
+          className="w-full text-sm outline-none resize-none"
           style={{
             backgroundColor: theme.card,
-            border: `1px solid ${theme.border}`,
+            border: `2px solid ${theme.primary}`,
             borderRadius: theme.radius,
-            padding: "1rem",
-            minHeight: "60vh",
+            padding: "0.875rem",
+            minHeight: "55vh",
             color: theme.foreground,
+            boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
           }}
         />
       </main>

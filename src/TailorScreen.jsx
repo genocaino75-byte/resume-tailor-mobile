@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import mammoth from "mammoth";
+import * as pdfjsLib from "pdfjs-dist";
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+
+// Point pdf.js at its matching worker version via CDN
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+
+async function extractPdfText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map((item) => item.str).join(" ");
+    fullText += pageText + "\n\n";
+  }
+  return fullText.trim();
+}
 
 const theme = {
   background: "#F9FAFB",
@@ -20,12 +38,69 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function TailorScreen() {
   const navigate = useNavigate();
+
+  // Prevent the browser's default "open/download the file" behavior for
+  // any drag that misses the actual drop zones (e.g. dropped slightly
+  // outside the textarea boundary).
+  useEffect(() => {
+    const preventDefault = (e) => e.preventDefault();
+    window.addEventListener("dragover", preventDefault);
+    window.addEventListener("drop", preventDefault);
+    return () => {
+      window.removeEventListener("dragover", preventDefault);
+      window.removeEventListener("drop", preventDefault);
+    };
+  }, []);
+
   const [resume, setResume] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [dragOverResume, setDragOverResume] = useState(false);
+  const [dragOverJD, setDragOverJD] = useState(false);
+
   const canSubmit = resume.trim() && jobDescription.trim() && !loading;
+
+  const handleFileDrop = async (e, setter, setDragOver) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+
+    const isTxt = file.type === "text/plain" || file.name.endsWith(".txt");
+    const isDocx =
+      file.name.endsWith(".docx") ||
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+    const isPdf = file.name.endsWith(".pdf") || file.type === "application/pdf";
+
+    if (isTxt) {
+      const reader = new FileReader();
+      reader.onload = (event) => setter(event.target.result);
+      reader.readAsText(file);
+    } else if (isDocx) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        setter(result.value);
+      } catch (err) {
+        console.error("Failed to read .docx file:", err);
+        alert("Couldn't read that Word document. Please try copying and pasting the text instead.");
+      }
+    } else if (isPdf) {
+      try {
+        const text = await extractPdfText(file);
+        setter(text);
+      } catch (err) {
+        console.error("Failed to read PDF file:", err);
+        alert("Couldn't read that PDF. Please try copying and pasting the text instead.");
+      }
+    } else {
+      alert("Only .txt, .docx, and .pdf files can be dropped directly.");
+    }
+  };
 
   const handleTailor = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
@@ -102,16 +177,20 @@ export default function TailorScreen() {
           <textarea
             value={resume}
             onChange={(e) => setResume(e.target.value)}
-            placeholder="Paste your resume here..."
+            onDragOver={(e) => { e.preventDefault(); setDragOverResume(true); }}
+            onDragLeave={() => setDragOverResume(false)}
+            onDrop={(e) => handleFileDrop(e, setResume, setDragOverResume)}
+            placeholder="Paste your resume here, or drag a .txt file..."
             className="w-full text-sm outline-none"
             style={{
-              backgroundColor: theme.card,
-              border: `2px solid ${theme.primary}`,
+              backgroundColor: dragOverResume ? theme.secondary : theme.card,
+              border: `2px ${dragOverResume ? "dashed" : "solid"} ${theme.primary}`,
               borderRadius: theme.radius,
               padding: "0.75rem",
               minHeight: "140px",
               color: theme.foreground,
               boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
+              transition: "background-color 0.15s ease",
             }}
           />
         </section>
@@ -126,16 +205,20 @@ export default function TailorScreen() {
           <textarea
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste job description here..."
+            onDragOver={(e) => { e.preventDefault(); setDragOverJD(true); }}
+            onDragLeave={() => setDragOverJD(false)}
+            onDrop={(e) => handleFileDrop(e, setJobDescription, setDragOverJD)}
+            placeholder="Paste job description here, or drag a .txt file..."
             className="w-full text-sm outline-none"
             style={{
-              backgroundColor: theme.card,
-              border: `2px solid ${theme.primary}`,
+              backgroundColor: dragOverJD ? theme.secondary : theme.card,
+              border: `2px ${dragOverJD ? "dashed" : "solid"} ${theme.primary}`,
               borderRadius: theme.radius,
               padding: "0.75rem",
               minHeight: "140px",
               color: theme.foreground,
               boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
+              transition: "background-color 0.15s ease",
             }}
           />
         </section>

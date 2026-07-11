@@ -105,24 +105,24 @@ export default function HomeScreen() {
         </section>
       </div>
 
-      {/* Back to login - matches splash screen's arrow style */}
+      {/* Back to login - repositioned to sit at the same height as the bottom nav */}
       <motion.button
         onClick={() => navigate("/login")}
         whileTap={{ scale: 0.9 }}
         whileHover={{ x: -4 }}
         className="fixed flex items-center justify-center rounded-full"
         style={{
-          bottom: "96px",
-          right: "24px",
-          width: "52px",
-          height: "52px",
+          bottom: "18px",
+          right: "16px",
+          width: "38px",
+          height: "38px",
           border: `3px solid ${theme.primary}`,
           backgroundColor: "rgba(124,58,237,0.08)",
           zIndex: 20,
         }}
         aria-label="Back to login"
       >
-        <ArrowLeft size={22} strokeWidth={2.75} color={theme.primary} />
+        <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
       </motion.button>
 
       {/* Bottom nav */}

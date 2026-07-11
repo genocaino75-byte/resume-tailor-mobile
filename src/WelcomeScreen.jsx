@@ -60,19 +60,6 @@ export default function WelcomeScreen() {
           >
             Get Started
           </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/login")}
-            className="w-full py-4 font-medium"
-            style={{
-              backgroundColor: "rgba(124,58,237,0.08)",
-              color: theme.primary,
-              borderRadius: theme.radius,
-              border: `1px solid ${theme.primary}`,
-            }}
-          >
-            Log In
-          </motion.button>
         </div>
       </div>
     </div>

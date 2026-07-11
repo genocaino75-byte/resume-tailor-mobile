@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
-import { Sparkles, Download, Check, Loader2 } from "lucide-react";
+import { Sparkles, Download, Check, Loader2, Home, ArrowLeft } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -145,7 +146,7 @@ export default function ResultsScreen() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-3.5">
+      <main className="flex-1 overflow-y-auto p-3.5 pb-24">
         <div className="flex items-center gap-1.5 mb-2">
           <img src="/tailor-icon.png" alt="" className="w-5 h-5 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           <span className="text-xs font-medium" style={{ color: theme.mutedForeground }}>Tailored Resume</span>
@@ -165,6 +166,53 @@ export default function ResultsScreen() {
           }}
         />
       </main>
+
+      {/* Back to previous screen - bottom right, matches Splash arrow style */}
+      <motion.button
+        onClick={() => navigate(-1)}
+        whileTap={{ scale: 0.9 }}
+        whileHover={{ x: -4 }}
+        className="fixed flex items-center justify-center rounded-full"
+        style={{
+          bottom: "24px",
+          right: "24px",
+          width: "52px",
+          height: "52px",
+          border: `3px solid ${theme.primary}`,
+          backgroundColor: "rgba(124,58,237,0.08)",
+          zIndex: 20,
+        }}
+        aria-label="Back"
+      >
+        <ArrowLeft size={22} strokeWidth={2.75} color={theme.primary} />
+      </motion.button>
+
+      {/* Home - bottom center, matches bottom nav style with label */}
+      <button
+        onClick={() => navigate("/home")}
+        className="fixed flex flex-col items-center gap-1"
+        style={{
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 20,
+          color: theme.primary,
+        }}
+      >
+        <motion.div
+          whileTap={{ scale: 0.9 }}
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: "44px",
+            height: "44px",
+            border: `3px solid ${theme.primary}`,
+            backgroundColor: "rgba(124,58,237,0.08)",
+          }}
+        >
+          <Home size={20} strokeWidth={2.75} color={theme.primary} />
+        </motion.div>
+        <span className="text-xs font-medium">Home</span>
+      </button>
     </div>
   );
 }

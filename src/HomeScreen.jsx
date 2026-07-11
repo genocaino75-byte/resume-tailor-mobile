@@ -105,26 +105,6 @@ export default function HomeScreen() {
         </section>
       </div>
 
-      {/* Back to login - repositioned to sit at the same height as the bottom nav */}
-      <motion.button
-        onClick={() => navigate("/login")}
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ x: -4 }}
-        className="fixed flex items-center justify-center rounded-full"
-        style={{
-          bottom: "18px",
-          right: "16px",
-          width: "38px",
-          height: "38px",
-          border: `3px solid ${theme.primary}`,
-          backgroundColor: "rgba(124,58,237,0.08)",
-          zIndex: 20,
-        }}
-        aria-label="Back to login"
-      >
-        <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
-      </motion.button>
-
       {/* Bottom nav */}
       <nav
         className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
@@ -162,6 +142,22 @@ export default function HomeScreen() {
             </button>
           );
         })}
+
+        {/* Back to login - now a proper flex item, evenly spaced with the others */}
+        <motion.button
+          onClick={() => navigate("/login")}
+          whileTap={{ scale: 0.9 }}
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: "38px",
+            height: "38px",
+            border: `3px solid ${theme.primary}`,
+            backgroundColor: "rgba(124,58,237,0.08)",
+          }}
+          aria-label="Back to login"
+        >
+          <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
+        </motion.button>
       </nav>
     </div>
   );

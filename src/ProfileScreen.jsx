@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FileText, Clock, History, Home } from "lucide-react";
+import { FileText, Clock, History, Home, Trash2 } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -30,21 +30,39 @@ export default function ProfileScreen() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
-    const loadHistory = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/resumes`);
-        setHistory(response.data);
-      } catch (err) {
-        console.error("Failed to load history:", err);
-        setError("Couldn't load your resume history.");
-      } finally {
-        setLoading(false);
-      }
-    };
     loadHistory();
   }, []);
+
+  const loadHistory = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/resumes`);
+      setHistory(response.data);
+    } catch (err) {
+      console.error("Failed to load history:", err);
+      setError("Couldn't load your resume history.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    if (!window.confirm("Delete this saved resume? This can't be undone.")) return;
+
+    setDeletingId(id);
+    try {
+      await axios.delete(`${API_URL}/api/resumes/${id}`);
+      setHistory((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error("Failed to delete resume:", err);
+      alert("Couldn't delete that resume. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -94,7 +112,7 @@ export default function ProfileScreen() {
 
         {!loading &&
           history.map((item) => (
-            <button
+            <div
               key={item.id}
               onClick={() =>
                 navigate("/results", {
@@ -104,7 +122,7 @@ export default function ProfileScreen() {
                   },
                 })
               }
-              className="w-full text-left p-3 flex items-center gap-2.5"
+              className="w-full text-left p-3 flex items-center gap-2.5 cursor-pointer"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${theme.primary}`,
@@ -127,11 +145,19 @@ export default function ProfileScreen() {
                   {formatDate(item.created_at)}
                 </div>
               </div>
-            </button>
+              <button
+                onClick={(e) => handleDelete(e, item.id)}
+                disabled={deletingId === item.id}
+                className="p-2 rounded-lg flex-shrink-0"
+                style={{ color: "#DC2626" }}
+                aria-label="Delete"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           ))}
       </main>
 
-      {/* Bottom nav */}
       <nav
         className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
         style={{ backgroundColor: theme.card + "f2", backdropFilter: "blur(8px)", borderColor: theme.border }}

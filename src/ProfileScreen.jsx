@@ -27,6 +27,7 @@ const NAV_ITEMS = [
 export default function ProfileScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [pulsingId, setPulsingId] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -49,7 +50,7 @@ export default function ProfileScreen() {
   };
 
   const handleDelete = async (e, id) => {
-    e.stopPropagation();
+    e.stopPropagation(); // don't trigger the card's own onClick (navigate to view)
     if (!window.confirm("Delete this saved resume? This can't be undone.")) return;
 
     setDeletingId(id);
@@ -62,6 +63,11 @@ export default function ProfileScreen() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleNavClick = (item) => {
+    setPulsingId(item.id);
+    setTimeout(() => navigate(item.path), 180);
   };
 
   const formatDate = (dateStr) => {
@@ -158,6 +164,7 @@ export default function ProfileScreen() {
           ))}
       </main>
 
+      {/* Bottom nav */}
       <nav
         className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
         style={{ backgroundColor: theme.card + "f2", backdropFilter: "blur(8px)", borderColor: theme.border }}
@@ -168,7 +175,7 @@ export default function ProfileScreen() {
           return (
             <button
               key={item.id}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavClick(item)}
               className="flex flex-col items-center gap-1.5"
               style={{ color: isActive ? theme.primary : theme.mutedForeground }}
             >
@@ -184,11 +191,16 @@ export default function ProfileScreen() {
                     border: `3px solid ${theme.primary}`,
                     opacity: isActive ? 1 : 0.55,
                   }}
-                  animate={isActive ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-                  transition={{ duration: 0.5 }}
+                  animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
                 />
               ) : (
-                <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
+                <motion.div
+                  animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
+                </motion.div>
               )}
               <span className="text-xs font-medium">{item.label}</span>
             </button>

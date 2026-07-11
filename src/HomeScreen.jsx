@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { History, Home, ArrowLeft } from "lucide-react";
@@ -24,6 +25,12 @@ const NAV_ITEMS = [
 export default function HomeScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [pulsingId, setPulsingId] = useState(null);
+
+  const handleNavClick = (item) => {
+    setPulsingId(item.id);
+    setTimeout(() => navigate(item.path), 180);
+  };
 
   return (
     <div
@@ -115,7 +122,7 @@ export default function HomeScreen() {
           return (
             <button
               key={item.id}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavClick(item)}
               className="flex flex-col items-center gap-1.5"
               style={{ color: isActive ? theme.primary : theme.mutedForeground }}
             >
@@ -131,11 +138,16 @@ export default function HomeScreen() {
                     border: `3px solid ${theme.primary}`,
                     opacity: isActive ? 1 : 0.55,
                   }}
-                  animate={isActive ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-                  transition={{ duration: 0.5 }}
+                  animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
                 />
               ) : (
-                <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
+                <motion.div
+                  animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
+                </motion.div>
               )}
               <span className="text-xs font-medium">{item.label}</span>
             </button>
@@ -150,6 +162,7 @@ export default function HomeScreen() {
         >
           <motion.div
             whileTap={{ scale: 0.9 }}
+            whileHover={{ x: -4 }}
             className="flex items-center justify-center rounded-full"
             style={{
               width: "38px",

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from "axios";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
@@ -139,13 +140,15 @@ export default function TailorScreen() {
         className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5 flex items-center gap-2.5"
         style={{ backgroundColor: theme.background + "cc", borderColor: theme.border }}
       >
-        <button
+        <motion.button
           onClick={() => navigate(-1)}
-          className="hover:opacity-70 transition-opacity"
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ x: -4 }}
+          className="transition-opacity"
           style={{ color: theme.mutedForeground }}
         >
           <ArrowLeft size={20} />
-        </button>
+        </motion.button>
         <h1 className="text-base font-semibold tracking-tight" style={{ color: theme.foreground }}>
           Tailor to Job
         </h1>

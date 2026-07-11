@@ -68,13 +68,15 @@ export default function SignupScreen() {
       style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
     >
       <header className="flex items-center px-5 pt-12 pb-6">
-        <button
+        <motion.button
           onClick={() => navigate(-1)}
-          className="hover:opacity-70 transition-opacity"
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ x: -4 }}
+          className="transition-opacity"
           style={{ color: theme.mutedForeground }}
         >
           <ChevronLeft size={24} />
-        </button>
+        </motion.button>
       </header>
 
       <div className="flex-1 overflow-y-auto px-6 pb-8">
@@ -94,14 +96,16 @@ export default function SignupScreen() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Full name"
-              className="w-full py-3.5 pl-11 pr-4 text-sm outline-none"
+              className="w-full py-3.5 pl-11 pr-11 text-sm outline-none"
               style={{
                 backgroundColor: theme.card,
-                border: `1px solid ${theme.border}`,
+                border: `2px solid ${theme.primary}`,
                 borderRadius: theme.radius,
                 color: theme.foreground,
+                boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
               }}
             />
+            <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           </div>
 
           <div>
@@ -113,14 +117,16 @@ export default function SignupScreen() {
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="Email address"
-                className="w-full py-3.5 pl-11 pr-4 text-sm outline-none"
+                className="w-full py-3.5 pl-11 pr-11 text-sm outline-none"
                 style={{
                   backgroundColor: theme.card,
-                  border: `1px solid ${emailError ? "#DC2626" : theme.border}`,
+                  border: `2px solid ${emailError ? "#DC2626" : theme.primary}`,
                   borderRadius: theme.radius,
                   color: theme.foreground,
+                  boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
                 }}
               />
+              <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
             </div>
             {emailError && <p className="text-xs mt-1.5 ml-1" style={{ color: "#DC2626" }}>{emailError}</p>}
           </div>
@@ -134,22 +140,24 @@ export default function SignupScreen() {
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Password (min. 10 characters, 2 numbers)"
-                className="w-full py-3.5 pl-11 pr-11 text-sm outline-none"
+                className="w-full py-3.5 pl-11 pr-16 text-sm outline-none"
                 style={{
                   backgroundColor: theme.card,
-                  border: `1px solid ${passwordError ? "#DC2626" : theme.border}`,
+                  border: `2px solid ${passwordError ? "#DC2626" : theme.primary}`,
                   borderRadius: theme.radius,
                   color: theme.foreground,
+                  boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
                 }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((s) => !s)}
-                className="absolute right-4 top-1/2 -translate-y-1/2"
+                className="absolute right-10 top-1/2 -translate-y-1/2"
                 style={{ color: theme.mutedForeground }}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+              <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
             </div>
             {passwordError && <p className="text-xs mt-1.5 ml-1" style={{ color: "#DC2626" }}>{passwordError}</p>}
           </div>

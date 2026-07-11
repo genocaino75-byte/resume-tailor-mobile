@@ -17,7 +17,6 @@ const theme = {
 };
 
 const NAV_ITEMS = [
-  { id: "home", label: "Home", icon: Home, path: "/home", image: false },
   { id: "tailor", label: "Tailor", icon: null, path: "/tailor", image: true },
   { id: "history", label: "History", icon: History, path: "/profile", image: false },
 ];
@@ -143,21 +142,26 @@ export default function HomeScreen() {
           );
         })}
 
-        {/* Back to login - now a proper flex item, evenly spaced with the others */}
-        <motion.button
+        {/* Back to login - matches icon+label structure of other nav items for alignment */}
+        <button
           onClick={() => navigate("/login")}
-          whileTap={{ scale: 0.9 }}
-          className="flex items-center justify-center rounded-full"
-          style={{
-            width: "38px",
-            height: "38px",
-            border: `3px solid ${theme.primary}`,
-            backgroundColor: "rgba(124,58,237,0.08)",
-          }}
-          aria-label="Back to login"
+          className="flex flex-col items-center gap-1.5"
+          style={{ color: theme.primary }}
         >
-          <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
-        </motion.button>
+          <motion.div
+            whileTap={{ scale: 0.9 }}
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: "38px",
+              height: "38px",
+              border: `3px solid ${theme.primary}`,
+              backgroundColor: "rgba(124,58,237,0.08)",
+            }}
+          >
+            <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
+          </motion.div>
+          <span className="text-xs font-medium">Back</span>
+        </button>
       </nav>
     </div>
   );

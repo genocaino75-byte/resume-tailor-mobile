@@ -107,16 +107,17 @@ export default function ProfileScreen() {
               className="w-full text-left p-3 flex items-center gap-2.5"
               style={{
                 backgroundColor: theme.card,
-                border: `1px solid ${theme.border}`,
+                border: `2px solid ${theme.primary}`,
                 borderRadius: theme.radius,
+                boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
               }}
             >
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: theme.secondary }}
-              >
-                <FileText size={14} style={{ color: theme.primary }} />
-              </div>
+              <img
+                src="/tailor-icon.png"
+                alt=""
+                className="w-8 h-8 rounded-lg flex-shrink-0"
+                style={{ objectFit: "cover", border: `1.5px solid ${theme.primary}` }}
+              />
               <div className="flex-1 min-w-0">
                 <h3 className="text-xs font-medium truncate" style={{ color: theme.foreground }}>
                   {item.job_title || "Untitled Resume"}
@@ -132,7 +133,7 @@ export default function ProfileScreen() {
 
       {/* Bottom nav */}
       <nav
-        className="fixed bottom-0 w-full h-16 flex justify-around items-center border-t"
+        className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
         style={{ backgroundColor: theme.card + "f2", backdropFilter: "blur(8px)", borderColor: theme.border }}
       >
         {NAV_ITEMS.map((item) => {
@@ -142,7 +143,7 @@ export default function ProfileScreen() {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center gap-1"
+              className="flex flex-col items-center gap-1.5"
               style={{ color: isActive ? theme.primary : theme.mutedForeground }}
             >
               {item.image ? (
@@ -151,19 +152,19 @@ export default function ProfileScreen() {
                   alt=""
                   className="rounded-full"
                   style={{
-                    width: "26px",
-                    height: "26px",
+                    width: "38px",
+                    height: "38px",
                     objectFit: "cover",
-                    border: `2px solid ${theme.primary}`,
+                    border: `3px solid ${theme.primary}`,
                     opacity: isActive ? 1 : 0.55,
                   }}
                   animate={isActive ? { scale: [1, 1.15, 1] } : { scale: 1 }}
                   transition={{ duration: 0.5 }}
                 />
               ) : (
-                <Icon size={26} style={{ border: `2px solid ${theme.primary}`, borderRadius: "9999px", padding: "3px" }} />
+                <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
               )}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}

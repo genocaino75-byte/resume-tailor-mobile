@@ -69,9 +69,8 @@ export default function SignupScreen() {
     try {
       const API_URL = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${API_URL}/api/auth/signup`, { email, password });
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("userEmail", response.data.user.email);
-      navigate("/home");
+      // Don't auto-login - account created successfully, but user must sign in
+      navigate("/login");
     } catch (err) {
       const message = err.response?.data?.error || "Something went wrong. Please try again.";
       setServerError(message);
@@ -215,7 +214,7 @@ export default function SignupScreen() {
         <div className="flex flex-col gap-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/home")}
+            onClick={() => alert("Google Sign-In is coming soon!")}
             className="w-full py-3.5 font-medium"
             style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
           >
@@ -223,7 +222,7 @@ export default function SignupScreen() {
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/home")}
+            onClick={() => alert("Apple Sign-In is coming soon!")}
             className="w-full py-3.5 font-medium"
             style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
           >

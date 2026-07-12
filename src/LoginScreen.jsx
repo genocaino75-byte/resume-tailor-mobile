@@ -171,7 +171,7 @@ export default function LoginScreen() {
         <div className="flex flex-col gap-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/home")}
+            onClick={() => alert("Google Sign-In is coming soon!")}
             className="w-full py-3.5 font-medium"
             style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
           >
@@ -179,7 +179,7 @@ export default function LoginScreen() {
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/home")}
+            onClick={() => alert("Apple Sign-In is coming soon!")}
             className="w-full py-3.5 font-medium"
             style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
           >

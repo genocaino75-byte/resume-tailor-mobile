@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FileText, Clock, History, Home, Trash2 } from "lucide-react";
+import { FileText, Clock, History, Home, Trash2, LogOut } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -70,6 +70,13 @@ export default function ProfileScreen() {
     setTimeout(() => navigate(item.path), 180);
   };
 
+  const handleLogout = () => {
+    if (!window.confirm("Log out of your account?")) return;
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userEmail");
+    navigate("/login");
+  };
+
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
@@ -86,12 +93,20 @@ export default function ProfileScreen() {
       style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
     >
       <header
-        className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5"
+        className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5 flex items-center justify-between"
         style={{ backgroundColor: theme.background + "cc", borderColor: theme.border }}
       >
         <h1 className="text-base font-semibold tracking-tight" style={{ color: theme.foreground }}>
           Resume History
         </h1>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg"
+          style={{ color: "#DC2626", backgroundColor: "rgba(220,38,38,0.08)" }}
+        >
+          <LogOut size={14} />
+          Log Out
+        </button>
       </header>
 
       <main className="flex-1 p-4 space-y-2.5 overflow-y-auto pb-24">

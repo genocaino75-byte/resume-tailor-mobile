@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
         <div className="w-full space-y-4">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/login")}
             className="w-full py-4 font-bold text-lg"
             style={{
               backgroundColor: theme.primary,

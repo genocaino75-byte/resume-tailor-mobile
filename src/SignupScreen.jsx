@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import { ChevronLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -46,7 +47,10 @@ export default function SignupScreen() {
     if (passwordError && !validatePassword(value)) setPasswordError("");
   };
 
-  const handleSignup = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
+
+  const handleSignup = async (e) => {
     e.preventDefault();
     if (!EMAIL_REGEX.test(email)) {
       setEmailError("Please enter a valid email address.");
@@ -59,7 +63,21 @@ export default function SignupScreen() {
       return;
     }
     setPasswordError("");
-    navigate("/home");
+    setServerError("");
+    setLoading(true);
+
+    try {
+      const API_URL = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${API_URL}/api/auth/signup`, { email, password });
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("userEmail", response.data.user.email);
+      navigate("/home");
+    } catch (err) {
+      const message = err.response?.data?.error || "Something went wrong. Please try again.";
+      setServerError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -166,18 +184,25 @@ export default function SignupScreen() {
             By signing up, you agree to our Terms of Service and Privacy Policy.
           </p>
 
+          {serverError && (
+            <p className="text-xs text-center" style={{ color: "#DC2626" }}>
+              {serverError}
+            </p>
+          )}
+
           <motion.button
             whileTap={{ scale: 0.97 }}
             type="submit"
+            disabled={loading}
             className="w-full py-4 font-bold mt-2"
             style={{
-              background: `linear-gradient(135deg, ${theme.primaryDark}, ${theme.primary})`,
-              color: "#ffffff",
+              background: loading ? theme.secondary : `linear-gradient(135deg, ${theme.primaryDark}, ${theme.primary})`,
+              color: loading ? theme.mutedForeground : "#ffffff",
               borderRadius: theme.radius,
-              boxShadow: "0 8px 20px rgba(124,58,237,0.3)",
+              boxShadow: loading ? "none" : "0 8px 20px rgba(124,58,237,0.3)",
             }}
           >
-            Create Account
+            {loading ? "Creating account..." : "Create Account"}
           </motion.button>
         </form>
 

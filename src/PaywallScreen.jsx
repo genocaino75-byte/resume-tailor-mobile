@@ -17,10 +17,9 @@ const PLANS = [
   {
     id: "yearly",
     label: "Yearly Access",
-    subtext: "$2.08 / month, billed yearly",
-    price: "$24.99",
+    subtext: "Billed yearly",
+    price: "$25.00",
     badge: "MOST POPULAR",
-    save: "SAVE 75%",
     icon: Calendar,
   },
   {
@@ -37,8 +36,9 @@ export default function PaywallScreen() {
   const [selectedPlan, setSelectedPlan] = useState("yearly");
 
   const handleContinue = () => {
-    // Real payment processing (Google Play Billing) not wired up yet.
-    alert("Payment processing coming soon!");
+    // Real payment processing (Google Play Billing) not wired up yet -
+    // for now, continue straight into the app.
+    navigate("/home");
   };
 
   return (
@@ -64,7 +64,7 @@ export default function PaywallScreen() {
         />
 
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/home")}
           className="absolute flex items-center justify-center rounded-full"
           style={{
             top: "20px",
@@ -131,6 +131,14 @@ export default function PaywallScreen() {
                     </div>
                   </div>
                   <div className="text-right">
+                    {plan.originalPrice && (
+                      <p
+                        className="text-xs line-through"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        {plan.originalPrice}
+                      </p>
+                    )}
                     <p className="text-lg font-bold" style={{ color: theme.primaryDark }}>
                       {plan.price}
                     </p>

@@ -1,7 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PaywallScreen from "./PaywallScreen";
-import SettingsScreen from "./SettingsScreen";
-import PaywallScreen from "./PaywallScreen";
 import SplashScreen from "./SplashScreen";
 import WelcomeScreen from "./WelcomeScreen";
 import LoginScreen from "./LoginScreen";
@@ -10,14 +7,14 @@ import HomeScreen from "./HomeScreen";
 import TailorScreen from "./TailorScreen";
 import ResultsScreen from "./ResultsScreen";
 import ProfileScreen from "./ProfileScreen";
+import PaywallScreen from "./PaywallScreen";
+import SettingsScreen from "./SettingsScreen";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SplashScreen />} />
-        <Route path="/paywall" element={<PaywallScreen />} />
-        <Route path="/settings" element={<SettingsScreen />} />
         <Route path="/welcome" element={<WelcomeScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/signup" element={<SignupScreen />} />
@@ -25,6 +22,8 @@ function App() {
         <Route path="/tailor" element={<TailorScreen />} />
         <Route path="/results" element={<ResultsScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/paywall" element={<PaywallScreen />} />
+        <Route path="/settings" element={<SettingsScreen />} />
       </Routes>
     </BrowserRouter>
   );

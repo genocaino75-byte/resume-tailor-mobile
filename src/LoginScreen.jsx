@@ -50,7 +50,7 @@ export default function LoginScreen() {
       const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("userEmail", response.data.user.email);
-      navigate("/home");
+      navigate("/paywall");
     } catch (err) {
       const message = err.response?.data?.error || "Something went wrong. Please try again.";
       setServerError(message);

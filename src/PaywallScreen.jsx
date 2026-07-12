@@ -1,0 +1,175 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { X, Calendar, Infinity as InfinityIcon } from "lucide-react";
+
+const theme = {
+  primaryDark: "#3B0764",
+  primary: "#7C3AED",
+  accentYellow: "#FBBF24",
+  white: "#FFFFFF",
+  mutedLight: "rgba(255,255,255,0.6)",
+  radius: "1rem",
+  fontSans: "'Inter', sans-serif",
+};
+
+const PLANS = [
+  {
+    id: "yearly",
+    label: "Yearly Access",
+    subtext: "$2.08 / month, billed yearly",
+    price: "$24.99",
+    badge: "MOST POPULAR",
+    save: "SAVE 75%",
+    icon: Calendar,
+  },
+  {
+    id: "onetime",
+    label: "One-Time Use",
+    subtext: "Pay once, own forever",
+    price: "$9.99",
+    icon: InfinityIcon,
+  },
+];
+
+export default function PaywallScreen() {
+  const navigate = useNavigate();
+  const [selectedPlan, setSelectedPlan] = useState("yearly");
+
+  const handleContinue = () => {
+    // Real payment processing (Google Play Billing) not wired up yet.
+    alert("Payment processing coming soon!");
+  };
+
+  return (
+    <div
+      className="relative h-screen w-full flex flex-col overflow-hidden"
+      style={{ fontFamily: theme.fontSans }}
+    >
+      {/* Decorative header */}
+      <div
+        className="relative w-full flex items-center justify-center overflow-hidden"
+        style={{
+          height: "38vh",
+          background: `linear-gradient(135deg, ${theme.primaryDark} 0%, ${theme.primary} 60%, #A855F7 100%)`,
+        }}
+      >
+        <motion.img
+          src="/tailor-icon.png"
+          alt=""
+          className="w-28 h-36"
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          style={{ objectFit: "contain", filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.3))" }}
+        />
+
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute flex items-center justify-center rounded-full"
+          style={{
+            top: "20px",
+            right: "20px",
+            width: "36px",
+            height: "36px",
+            backgroundColor: "rgba(0,0,0,0.25)",
+          }}
+        >
+          <X size={18} color="#ffffff" />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div
+        className="flex-1 flex flex-col px-6 pt-6 pb-8 overflow-y-auto"
+        style={{ backgroundColor: theme.primaryDark, color: "#ffffff" }}
+      >
+        <h1 className="text-3xl font-bold mb-1">Go Pro Today</h1>
+        <p className="text-sm mb-6" style={{ color: theme.mutedLight }}>
+          Choose the plan that suits your needs.
+        </p>
+
+        <div className="space-y-3 mb-6">
+          {PLANS.map((plan) => {
+            const Icon = plan.icon;
+            const isSelected = selectedPlan === plan.id;
+            return (
+              <button
+                key={plan.id}
+                onClick={() => setSelectedPlan(plan.id)}
+                className="relative w-full text-left"
+              >
+                {plan.badge && (
+                  <span
+                    className="absolute -top-2.5 left-4 px-3 py-0.5 rounded-full text-[10px] font-bold z-10"
+                    style={{ backgroundColor: theme.primary, color: "#ffffff" }}
+                  >
+                    {plan.badge}
+                  </span>
+                )}
+                <div
+                  className="flex items-center justify-between p-4"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    borderRadius: theme.radius,
+                    border: isSelected ? `2px solid ${theme.primary}` : "2px solid transparent",
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: theme.primary + "1a" }}
+                    >
+                      <Icon size={18} color={theme.primary} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold" style={{ color: theme.primaryDark }}>
+                        {plan.label}
+                      </h3>
+                      <p className="text-xs" style={{ color: "#6B7280" }}>
+                        {plan.subtext}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold" style={{ color: theme.primaryDark }}>
+                      {plan.price}
+                    </p>
+                    {plan.save && (
+                      <p className="text-[11px] font-semibold" style={{ color: "#10B981" }}>
+                        {plan.save}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleContinue}
+          className="w-full py-4 font-bold text-base mb-4"
+          style={{
+            backgroundColor: theme.accentYellow,
+            color: theme.primaryDark,
+            borderRadius: theme.radius,
+            boxShadow: "0 8px 20px rgba(251,191,36,0.3)",
+          }}
+        >
+          Continue
+        </motion.button>
+
+        <button className="text-center text-sm mb-4" style={{ color: theme.mutedLight }}>
+          Restore Purchase
+        </button>
+
+        <div className="flex items-center justify-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <span className="uppercase tracking-wide">Terms of Use</span>
+          <span>•</span>
+          <span className="uppercase tracking-wide">Privacy Policy</span>
+        </div>
+      </div>
+    </div>
+  );
+}

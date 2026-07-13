@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Settings } from "lucide-react";
 
 const theme = {
   background: "#ffffff",
@@ -22,6 +23,15 @@ export default function WelcomeScreen() {
         fontFamily: theme.fontSans,
       }}
     >
+      <button
+        onClick={() => navigate("/settings")}
+        className="absolute top-12 left-6 z-20 flex items-center justify-center"
+        style={{ color: theme.primary }}
+        aria-label="Settings"
+      >
+        <Settings size={24} />
+      </button>
+
       <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 12 }}

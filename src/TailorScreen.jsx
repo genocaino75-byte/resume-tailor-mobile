@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
-import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Settings } from "lucide-react";
 
 // Point pdf.js at its matching worker version via CDN
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -137,21 +137,30 @@ export default function TailorScreen() {
       style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
     >
       <header
-        className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5 flex items-center gap-2.5"
+        className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5 flex items-center justify-between"
         style={{ backgroundColor: theme.background + "cc", borderColor: theme.border }}
       >
-        <motion.button
-          onClick={() => navigate(-1)}
-          whileTap={{ scale: 0.9 }}
-          whileHover={{ x: -4 }}
-          className="transition-opacity"
-          style={{ color: theme.mutedForeground }}
+        <div className="flex items-center gap-2.5">
+          <motion.button
+            onClick={() => navigate(-1)}
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ x: -4 }}
+            className="transition-opacity"
+            style={{ color: theme.mutedForeground }}
+          >
+            <ArrowLeft size={20} />
+          </motion.button>
+          <h1 className="text-base font-semibold tracking-tight" style={{ color: theme.foreground }}>
+            Tailor to Job
+          </h1>
+        </div>
+        <button
+          onClick={() => navigate("/settings")}
+          style={{ color: theme.primary }}
+          aria-label="Settings"
         >
-          <ArrowLeft size={20} />
-        </motion.button>
-        <h1 className="text-base font-semibold tracking-tight" style={{ color: theme.foreground }}>
-          Tailor to Job
-        </h1>
+          <Settings size={20} />
+        </button>
       </header>
 
       <main className="flex-1 w-full p-4 space-y-4 overflow-y-auto pb-6">

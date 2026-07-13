@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { History, Home, ArrowLeft } from "lucide-react";
+import { History, Home, ArrowLeft, Settings } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -69,6 +69,13 @@ export default function HomeScreen() {
             <p className="text-[11px] text-white/80 mt-0.5">Powered by Claude AI</p>
           </div>
         </div>
+        <button
+          onClick={() => navigate("/settings")}
+          style={{ color: "#ffffff" }}
+          aria-label="Settings"
+        >
+          <Settings size={22} />
+        </button>
       </header>
 
       {/* Content */}

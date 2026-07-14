@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FileText, Clock, History, Home, Trash2, LogOut } from "lucide-react";
+import { FileText, Clock, History, Home, Trash2, LogOut, ArrowLeft } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -21,7 +21,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const NAV_ITEMS = [
   { id: "home", label: "Home", icon: Home, path: "/home", image: false },
   { id: "tailor", label: "Tailor", icon: null, path: "/tailor", image: true },
-  { id: "history", label: "History", icon: History, path: "/profile", image: false },
+  { id: "back", label: "Back", icon: ArrowLeft, path: null, image: false },
 ];
 
 export default function ProfileScreen() {
@@ -73,7 +73,13 @@ export default function ProfileScreen() {
 
   const handleNavClick = (item) => {
     setPulsingId(item.id);
-    setTimeout(() => navigate(item.path), 180);
+    setTimeout(() => {
+      if (item.path === null) {
+        navigate(-1);
+      } else {
+        navigate(item.path);
+      }
+    }, 180);
   };
 
   const handleLogout = () => {

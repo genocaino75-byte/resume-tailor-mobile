@@ -20,6 +20,7 @@ const theme = {
 const NAV_ITEMS = [
   { id: "tailor", label: "Tailor", icon: null, path: "/tailor", image: true },
   { id: "history", label: "History", icon: History, path: "/profile", image: false },
+  { id: "back", label: "Back", icon: ArrowLeft, path: "/login", image: false },
 ];
 
 export default function HomeScreen() {
@@ -160,28 +161,6 @@ export default function HomeScreen() {
             </button>
           );
         })}
-
-        {/* Back to login - matches icon+label structure of other nav items for alignment */}
-        <button
-          onClick={() => navigate("/login")}
-          className="flex flex-col items-center gap-1.5"
-          style={{ color: theme.primary }}
-        >
-          <motion.div
-            whileTap={{ scale: 0.9 }}
-            whileHover={{ x: -4 }}
-            className="flex items-center justify-center rounded-full"
-            style={{
-              width: "38px",
-              height: "38px",
-              border: `3px solid ${theme.primary}`,
-              backgroundColor: "rgba(124,58,237,0.08)",
-            }}
-          >
-            <ArrowLeft size={16} strokeWidth={2.75} color={theme.primary} />
-          </motion.div>
-          <span className="text-xs font-medium">Back</span>
-        </button>
       </nav>
     </div>
   );

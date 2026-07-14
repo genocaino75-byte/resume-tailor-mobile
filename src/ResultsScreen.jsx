@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Sparkles, Download, Check, Loader2, Home, ArrowLeft } from "lucide-react";
+import { Sparkles, Download, Check, Loader2, Home, ArrowLeft, History } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -172,52 +172,72 @@ export default function ResultsScreen() {
         />
       </main>
 
-      {/* Back to previous screen - bottom right, matches Splash arrow style */}
-      <motion.button
-        onClick={() => navigate(-1)}
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ x: -4 }}
-        className="fixed flex items-center justify-center rounded-full"
-        style={{
-          bottom: "24px",
-          right: "24px",
-          width: "52px",
-          height: "52px",
-          border: `3px solid ${theme.primary}`,
-          backgroundColor: "rgba(124,58,237,0.08)",
-          zIndex: 20,
-        }}
-        aria-label="Back"
+      {/* Bottom nav - History, Home, Back - evenly spaced */}
+      <nav
+        className="fixed bottom-0 w-full h-20 flex justify-around items-center border-t"
+        style={{ backgroundColor: theme.card + "f2", backdropFilter: "blur(8px)", borderColor: theme.border, zIndex: 20 }}
       >
-        <ArrowLeft size={22} strokeWidth={2.75} color={theme.primary} />
-      </motion.button>
-
-      {/* Home - bottom center, matches bottom nav style with label */}
-      <button
-        onClick={() => navigate("/home")}
-        className="fixed flex flex-col items-center gap-1"
-        style={{
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 20,
-          color: theme.primary,
-        }}
-      >
-        <motion.div
-          whileTap={{ scale: 0.9 }}
-          className="flex items-center justify-center rounded-full"
-          style={{
-            width: "44px",
-            height: "44px",
-            border: `3px solid ${theme.primary}`,
-            backgroundColor: "rgba(124,58,237,0.08)",
-          }}
+        <button
+          onClick={() => navigate("/profile")}
+          className="flex flex-col items-center gap-1.5"
+          style={{ color: theme.primary }}
         >
-          <Home size={20} strokeWidth={2.75} color={theme.primary} />
-        </motion.div>
-        <span className="text-xs font-medium">Home</span>
-      </button>
+          <motion.div
+            whileTap={{ scale: 0.9 }}
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: "38px",
+              height: "38px",
+              border: `3px solid ${theme.primary}`,
+              backgroundColor: "rgba(124,58,237,0.08)",
+            }}
+          >
+            <History size={18} strokeWidth={2.5} color={theme.primary} />
+          </motion.div>
+          <span className="text-xs font-medium">History</span>
+        </button>
+
+        <button
+          onClick={() => navigate("/home")}
+          className="flex flex-col items-center gap-1.5"
+          style={{ color: theme.primary }}
+        >
+          <motion.div
+            whileTap={{ scale: 0.9 }}
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: "38px",
+              height: "38px",
+              border: `3px solid ${theme.primary}`,
+              backgroundColor: "rgba(124,58,237,0.08)",
+            }}
+          >
+            <Home size={18} strokeWidth={2.5} color={theme.primary} />
+          </motion.div>
+          <span className="text-xs font-medium">Home</span>
+        </button>
+
+        <button
+          onClick={() => navigate(-1)}
+          className="flex flex-col items-center gap-1.5"
+          style={{ color: theme.primary }}
+        >
+          <motion.div
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ x: -4 }}
+            className="flex items-center justify-center rounded-full"
+            style={{
+              width: "38px",
+              height: "38px",
+              border: `3px solid ${theme.primary}`,
+              backgroundColor: "rgba(124,58,237,0.08)",
+            }}
+          >
+            <ArrowLeft size={18} strokeWidth={2.5} color={theme.primary} />
+          </motion.div>
+          <span className="text-xs font-medium">Back</span>
+        </button>
+      </nav>
     </div>
   );
 }

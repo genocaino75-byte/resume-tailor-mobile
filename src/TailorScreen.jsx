@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
-import { ArrowLeft, Sparkles, Loader2, Settings, FileText, Briefcase } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Settings, FileText, Briefcase, Cpu, Check } from "lucide-react";
 
 // Point pdf.js at its matching worker version via CDN
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -103,6 +103,8 @@ export default function TailorScreen() {
     }
   };
 
+  const [loadingStep, setLoadingStep] = useState(0);
+
   const handleTailor = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
       setError("Please paste both your resume and the job description.");
@@ -110,6 +112,11 @@ export default function TailorScreen() {
     }
     setError("");
     setLoading(true);
+    setLoadingStep(0);
+
+    // Cosmetic step progression while the real API call is in flight -
+    // gives the user a sense of progress during the wait.
+    const stepTimer = setTimeout(() => setLoadingStep(1), 1800);
 
     try {
       const response = await axios.post(`${API_URL}/api/tailor`, {
@@ -127,9 +134,80 @@ export default function TailorScreen() {
       console.error("Tailor request failed:", err);
       setError("Something went wrong tailoring your resume. Please try again.");
     } finally {
+      clearTimeout(stepTimer);
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center px-8"
+        style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
+      >
+        <div className="relative w-40 h-40 flex items-center justify-center mb-8">
+          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="none" stroke={theme.border} strokeWidth="4" />
+            <motion.circle
+              cx="50"
+              cy="50"
+              r="46"
+              fill="none"
+              stroke={theme.primary}
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="289"
+              animate={{ strokeDashoffset: [289, 60] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </svg>
+          <motion.div
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Cpu size={44} color={theme.primary} strokeWidth={1.5} />
+          </motion.div>
+        </div>
+
+        <h2 className="text-xl font-bold text-center mb-2" style={{ color: theme.foreground }}>
+          Refining your career narrative...
+        </h2>
+        <p className="text-sm text-center mb-6" style={{ color: theme.mutedForeground }}>
+          Our AI is analyzing the job description and tailoring your resume to match.
+        </p>
+
+        <div className="w-full max-w-xs space-y-3">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Check size={12} color="#ffffff" strokeWidth={3} />
+            </div>
+            <span className="text-sm font-medium" style={{ color: theme.primary }}>
+              Analyzing keywords
+            </span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            {loadingStep >= 1 ? (
+              <Loader2 size={20} className="animate-spin flex-shrink-0" color={theme.mutedForeground} />
+            ) : (
+              <div
+                className="w-5 h-5 rounded-full flex-shrink-0"
+                style={{ border: `2px solid ${theme.border}` }}
+              />
+            )}
+            <span
+              className="text-sm"
+              style={{ color: loadingStep >= 1 ? theme.foreground : theme.mutedForeground }}
+            >
+              Rewriting bullet points...
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

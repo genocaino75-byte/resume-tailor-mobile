@@ -29,7 +29,7 @@ export default function WelcomeScreen() {
         style={{ color: theme.primary }}
         aria-label="Settings"
       >
-        <Settings size={24} fill={theme.primary} color={theme.primary} />
+        <Settings size={26} strokeWidth={2.5} color={theme.primary} />
       </button>
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-20">

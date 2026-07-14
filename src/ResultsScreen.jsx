@@ -32,12 +32,17 @@ export default function ResultsScreen() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await axios.post(`${API_URL}/api/resumes`, {
-        original: originalResume,
-        tailored: resumeText,
-        jobTitle: "",
-        company: "",
-      });
+      const token = localStorage.getItem("authToken");
+      await axios.post(
+        `${API_URL}/api/resumes`,
+        {
+          original: originalResume,
+          tailored: resumeText,
+          jobTitle: "",
+          company: "",
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {

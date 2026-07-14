@@ -39,7 +39,10 @@ export default function ProfileScreen() {
 
   const loadHistory = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/resumes`);
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(`${API_URL}/api/resumes`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setHistory(response.data);
     } catch (err) {
       console.error("Failed to load history:", err);
@@ -55,7 +58,10 @@ export default function ProfileScreen() {
 
     setDeletingId(id);
     try {
-      await axios.delete(`${API_URL}/api/resumes/${id}`);
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`${API_URL}/api/resumes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setHistory((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error("Failed to delete resume:", err);
@@ -102,7 +108,7 @@ export default function ProfileScreen() {
         <button
           onClick={handleLogout}
           className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg"
-          style={{ color: "#DC2626", backgroundColor: "rgba(220,38,38,0.08)" }}
+          style={{ color: theme.primary, backgroundColor: theme.primary + "14" }}
         >
           <LogOut size={14} />
           Log Out

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Browser } from "@capacitor/browser";
 import { ChevronLeft, Star, Info, Shield, FileText, Phone, LogOut, Trash2, Loader2 } from "lucide-react";
 
 const theme = {
@@ -130,7 +131,19 @@ export default function SettingsScreen() {
           </h2>
           <div className="px-1 divide-y" style={{ borderColor: theme.border }}>
             {PREFERENCE_ITEMS.map((item) => (
-              <SettingsRow key={item.id} item={item} onClick={() => {}} />
+              <SettingsRow
+                key={item.id}
+                item={item}
+                onClick={() => {
+                  if (item.id === "privacy") {
+                    Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/privacy-policy.html" });
+                  } else if (item.id === "terms") {
+                    Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/terms-of-use.html" });
+                  } else if (item.id === "contact") {
+                    Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/contact-us.html" });
+                  }
+                }}
+              />
             ))}
           </div>
         </section>

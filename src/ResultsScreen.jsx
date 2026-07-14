@@ -52,18 +52,24 @@ export default function ResultsScreen() {
     }
   };
 
-  const handleExport = async () => {
+  const [showExportPicker, setShowExportPicker] = useState(false);
+
+  const handleExport = async (format) => {
+    setShowExportPicker(false);
     setExporting(true);
     try {
+      const endpoint = format === "pdf" ? "generate-pdf" : "generate-docx";
+      const extension = format === "pdf" ? "pdf" : "docx";
+
       const response = await axios.post(
-        `${API_URL}/api/generate-docx`,
+        `${API_URL}/api/${endpoint}`,
         { resumeText, jobTitle: "", company: "" },
         { responseType: "blob" }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "tailored_resume.docx");
+      link.setAttribute("download", `tailored_resume.${extension}`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -136,7 +142,7 @@ export default function ResultsScreen() {
             {saved ? "Saved" : "Save"}
           </button>
           <button
-            onClick={handleExport}
+            onClick={() => setShowExportPicker(true)}
             disabled={exporting}
             className="px-3 py-1 text-xs font-medium flex items-center gap-1"
             style={{
@@ -150,6 +156,50 @@ export default function ResultsScreen() {
           </button>
         </div>
       </header>
+
+      {/* Export format picker */}
+      {showExportPicker && (
+        <div
+          className="fixed inset-0 flex items-end justify-center z-30"
+          style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+          onClick={() => setShowExportPicker(false)}
+        >
+          <div
+            className="w-full p-5 space-y-3"
+            style={{
+              backgroundColor: theme.card,
+              borderTopLeftRadius: "1.25rem",
+              borderTopRightRadius: "1.25rem",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-sm font-semibold text-center mb-2" style={{ color: theme.foreground }}>
+              Export as...
+            </h3>
+            <button
+              onClick={() => handleExport("docx")}
+              className="w-full py-3.5 font-medium text-sm"
+              style={{ backgroundColor: theme.secondary, color: theme.foreground, borderRadius: theme.radius }}
+            >
+              Word Document (.docx)
+            </button>
+            <button
+              onClick={() => handleExport("pdf")}
+              className="w-full py-3.5 font-medium text-sm"
+              style={{ backgroundColor: theme.secondary, color: theme.foreground, borderRadius: theme.radius }}
+            >
+              PDF (.pdf)
+            </button>
+            <button
+              onClick={() => setShowExportPicker(false)}
+              className="w-full py-3 text-sm"
+              style={{ color: theme.mutedForeground }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 overflow-y-auto p-3.5 pb-24">
         <div className="flex items-center gap-1.5 mb-2">

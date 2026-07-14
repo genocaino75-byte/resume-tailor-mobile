@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Star, Info, Shield, FileText, Phone, LogOut } from "lucide-react";
+import axios from "axios";
+import { ChevronLeft, Star, Info, Shield, FileText, Phone, LogOut, Trash2, Loader2 } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -48,12 +50,38 @@ function SettingsRow({ item, onClick }) {
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [deleting, setDeleting] = useState(false);
 
   const handleLogout = () => {
     if (!window.confirm("Log out of your account?")) return;
     localStorage.removeItem("authToken");
     localStorage.removeItem("userEmail");
     navigate("/login");
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Delete your account permanently? This will erase your account and all saved resumes. This cannot be undone."
+    );
+    if (!confirmed) return;
+
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`${API_URL}/api/auth/account`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userEmail");
+      alert("Your account has been deleted.");
+      navigate("/login");
+    } catch (err) {
+      console.error("Failed to delete account:", err);
+      alert("Couldn't delete your account. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -120,12 +148,32 @@ export default function SettingsScreen() {
           >
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: theme.primary + "22" }}
+            >
+              <LogOut size={18} color={theme.primary} />
+            </div>
+            <span className="text-sm font-medium" style={{ color: theme.primary }}>
+              Log Out
+            </span>
+          </button>
+
+          <button
+            onClick={handleDeleteAccount}
+            disabled={deleting}
+            className="w-full flex items-center gap-3 py-3.5"
+          >
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: "#DC262622" }}
             >
-              <LogOut size={18} color="#DC2626" />
+              {deleting ? (
+                <Loader2 size={18} color="#DC2626" className="animate-spin" />
+              ) : (
+                <Trash2 size={18} color="#DC2626" />
+              )}
             </div>
             <span className="text-sm font-medium" style={{ color: "#DC2626" }}>
-              Log Out
+              {deleting ? "Deleting account..." : "Delete Account"}
             </span>
           </button>
         </section>

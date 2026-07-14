@@ -117,7 +117,16 @@ export default function SettingsScreen() {
             style={{ borderColor: theme.border }}
           >
             {GENERAL_ITEMS.map((item) => (
-              <SettingsRow key={item.id} item={item} onClick={() => {}} />
+              <SettingsRow
+                key={item.id}
+                item={item}
+                onClick={() => {
+                  if (item.id === "help") {
+                    Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/help-center.html" });
+                  }
+                  // Rate Us will be wired up once the app has a real Play Store listing.
+                }}
+              />
             ))}
           </div>
         </section>

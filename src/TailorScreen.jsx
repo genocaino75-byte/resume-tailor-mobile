@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
-import { ArrowLeft, Sparkles, Loader2, Settings } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Settings, FileText, Briefcase } from "lucide-react";
 
 // Point pdf.js at its matching worker version via CDN
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -181,7 +181,7 @@ export default function TailorScreen() {
 
         <section className="space-y-2">
           <div className="flex items-center gap-1.5">
-            <img src="/tailor-icon.png" alt="" className="w-5 h-5 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
+            <FileText size={16} color={theme.primary} />
             <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
               Your Resume
             </label>
@@ -209,7 +209,7 @@ export default function TailorScreen() {
 
         <section className="space-y-2">
           <div className="flex items-center gap-1.5">
-            <img src="/tailor-icon.png" alt="" className="w-5 h-5 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
+            <Briefcase size={16} color={theme.primary} />
             <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
               Job Description
             </label>

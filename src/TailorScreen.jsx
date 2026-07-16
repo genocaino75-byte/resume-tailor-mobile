@@ -32,7 +32,7 @@ const theme = {
   mutedForeground: "#6B7280",
   border: "#E5E7EB",
   radius: "0.5rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 const API_URL = import.meta.env.VITE_API_URL;

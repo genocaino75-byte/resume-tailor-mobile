@@ -14,7 +14,7 @@ const theme = {
   mutedForeground: "#6B7280",
   border: "#E5E7EB",
   radius: "0.5rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -136,7 +136,12 @@ export default function LoginScreen() {
             <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           </div>
 
-          <button type="button" className="text-right text-xs" style={{ color: theme.mutedForeground }}>
+          <button
+            type="button"
+            onClick={() => navigate("/forgot-password")}
+            className="text-right text-xs"
+            style={{ color: theme.mutedForeground }}
+          >
             Forgot password?
           </button>
 

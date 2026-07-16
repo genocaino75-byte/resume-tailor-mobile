@@ -8,7 +8,7 @@ const theme = {
   primaryDark: "#3B0764",
   accentYellow: "#FBBF24",
   radius: "0.5rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 export default function WelcomeScreen() {

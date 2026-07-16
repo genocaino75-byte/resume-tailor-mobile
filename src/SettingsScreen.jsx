@@ -12,7 +12,7 @@ const theme = {
   mutedForeground: "#6B7280",
   border: "#E5E7EB",
   radius: "0.75rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 const GENERAL_ITEMS = [

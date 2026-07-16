@@ -6,7 +6,7 @@ const theme = {
   background: "#ffffff",
   primary: "#7C3AED",
   primaryDark: "#3B0764",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 export default function SplashScreen() {

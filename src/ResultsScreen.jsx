@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Sparkles, Download, Check, Loader2, Home, ArrowLeft, History } from "lucide-react";
+import { Sparkles, Download, Check, Loader2, Home, ArrowLeft, History, FileText } from "lucide-react";
 
 const theme = {
   background: "#F9FAFB",
@@ -15,7 +15,7 @@ const theme = {
   border: "#E5E7EB",
   success: "#10B981",
   radius: "0.5rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -114,7 +114,7 @@ export default function ResultsScreen() {
             className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
             style={{ backgroundColor: theme.secondary, border: `1.5px solid ${theme.primary}` }}
           >
-            <img src="/tailor-icon.png" alt="" className="w-7 h-7" style={{ objectFit: "contain" }} />
+            <FileText size={16} color={theme.primary} />
           </div>
           <div>
             <h2 className="text-xs font-semibold" style={{ color: theme.foreground }}>
@@ -203,7 +203,7 @@ export default function ResultsScreen() {
 
       <main className="flex-1 overflow-y-auto p-3.5 pb-24">
         <div className="flex items-center gap-1.5 mb-2">
-          <img src="/tailor-icon.png" alt="" className="w-5 h-5 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
+          <FileText size={16} color={theme.primary} />
           <span className="text-xs font-medium" style={{ color: theme.mutedForeground }}>Tailored Resume</span>
         </div>
         <textarea

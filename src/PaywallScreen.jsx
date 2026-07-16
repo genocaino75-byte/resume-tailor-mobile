@@ -10,7 +10,7 @@ const theme = {
   white: "#FFFFFF",
   mutedLight: "rgba(255,255,255,0.6)",
   radius: "1rem",
-  fontSans: "'Inter', sans-serif",
+  fontSans: "'Sora', sans-serif",
 };
 
 const PLANS = [

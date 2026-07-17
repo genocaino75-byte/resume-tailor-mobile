@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { X, Calendar, Infinity as InfinityIcon } from "lucide-react";
+import { Browser } from "@capacitor/browser";
+import { X, FileText, Infinity as InfinityIcon } from "lucide-react";
 
 const theme = {
   primaryDark: "#3B0764",
@@ -15,25 +16,25 @@ const theme = {
 
 const PLANS = [
   {
-    id: "yearly",
-    label: "Yearly Access",
-    subtext: "Billed yearly",
+    id: "lifetime",
+    label: "Lifetime Access",
+    subtext: "Pay once, unlimited tailoring",
     price: "$25.00",
-    badge: "MOST POPULAR",
-    icon: Calendar,
+    badge: "BEST VALUE",
+    icon: InfinityIcon,
   },
   {
-    id: "onetime",
-    label: "One-Time Use",
-    subtext: "Pay once, own forever",
+    id: "single",
+    label: "Single Use",
+    subtext: "One resume tailoring credit",
     price: "$9.99",
-    icon: InfinityIcon,
+    icon: FileText,
   },
 ];
 
 export default function PaywallScreen() {
   const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState("yearly");
+  const [selectedPlan, setSelectedPlan] = useState("lifetime");
 
   const handleContinue = () => {
     // Real payment processing (Google Play Billing) not wired up yet -
@@ -168,14 +169,30 @@ export default function PaywallScreen() {
           Continue
         </motion.button>
 
-        <button className="text-center text-sm mb-4" style={{ color: theme.mutedLight }}>
+        <button
+          onClick={() => alert("Restore Purchase will be available once in-app purchases are live.")}
+          className="text-center text-sm mb-4"
+          style={{ color: theme.mutedLight }}
+        >
           Restore Purchase
         </button>
 
         <div className="flex items-center justify-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
-          <span className="uppercase tracking-wide">Terms of Use</span>
+          <button
+            onClick={() => Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/terms-of-use.html" })}
+            className="uppercase tracking-wide"
+            style={{ color: "rgba(255,255,255,0.4)" }}
+          >
+            Terms of Use
+          </button>
           <span>•</span>
-          <span className="uppercase tracking-wide">Privacy Policy</span>
+          <button
+            onClick={() => Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/privacy-policy.html" })}
+            className="uppercase tracking-wide"
+            style={{ color: "rgba(255,255,255,0.4)" }}
+          >
+            Privacy Policy
+          </button>
         </div>
       </div>
     </div>

@@ -217,6 +217,7 @@ export default function ProfileScreen() {
                     objectFit: "cover",
                     border: `3px solid ${theme.primary}`,
                     opacity: isActive ? 1 : 0.55,
+                    boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
                   }}
                   animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
                   transition={{ duration: 0.35 }}
@@ -226,7 +227,7 @@ export default function ProfileScreen() {
                   animate={pulsingId === item.id || isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
                   transition={{ duration: 0.35 }}
                 >
-                  <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px" }} />
+                  <Icon size={38} style={{ border: `3px solid ${theme.primary}`, borderRadius: "9999px", padding: "5px", backgroundColor: "rgba(124,58,237,0.15)", boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }} />
                 </motion.div>
               )}
               <span className="text-xs font-medium">{item.label}</span>

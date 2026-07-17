@@ -239,7 +239,8 @@ export default function ResultsScreen() {
               width: "38px",
               height: "38px",
               border: `3px solid ${theme.primary}`,
-              backgroundColor: "rgba(124,58,237,0.08)",
+              backgroundColor: "rgba(124,58,237,0.15)",
+              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
             }}
           >
             <History size={18} strokeWidth={2.5} color={theme.primary} />
@@ -259,7 +260,8 @@ export default function ResultsScreen() {
               width: "38px",
               height: "38px",
               border: `3px solid ${theme.primary}`,
-              backgroundColor: "rgba(124,58,237,0.08)",
+              backgroundColor: "rgba(124,58,237,0.15)",
+              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
             }}
           >
             <Home size={18} strokeWidth={2.5} color={theme.primary} />
@@ -280,7 +282,8 @@ export default function ResultsScreen() {
               width: "38px",
               height: "38px",
               border: `3px solid ${theme.primary}`,
-              backgroundColor: "rgba(124,58,237,0.08)",
+              backgroundColor: "rgba(124,58,237,0.15)",
+              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
             }}
           >
             <ArrowLeft size={18} strokeWidth={2.5} color={theme.primary} />

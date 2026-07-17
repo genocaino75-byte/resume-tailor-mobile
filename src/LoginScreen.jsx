@@ -51,9 +51,11 @@ export default function LoginScreen() {
     setGoogleLoading(true);
 
     try {
+      // Note: not passing "scopes" here - the plugin requires extra native
+      // Android setup for those, and Google returns email/profile by default.
       const result = await SocialLogin.login({
         provider: "google",
-        options: { scopes: ["email", "profile"] },
+        options: {},
       });
 
       const idToken = result.result?.idToken;

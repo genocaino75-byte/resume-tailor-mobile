@@ -27,18 +27,18 @@ export default function SplashScreen() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex flex-col items-center gap-5"
-        aria-label="Continue to Resume Tailor"
+        aria-label="Continue to Resume Tailored to JD"
       >
         <motion.img
           src="/tailor-icon.png"
-          alt="Resume Tailor"
+          alt="Resume Tailored to JD"
           className="w-32 h-44"
           animate={{ y: [0, -8, 0] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
           style={{ filter: "drop-shadow(0 10px 20px rgba(124,58,237,0.25))", objectFit: "contain" }}
         />
-        <h1 className="text-3xl font-bold tracking-tight" style={{ color: theme.primary }}>
-          Resume Tailor
+        <h1 className="text-2xl font-bold tracking-tight text-center" style={{ color: theme.primary }}>
+          Resume Tailored to JD
         </h1>
       </motion.button>
     </div>

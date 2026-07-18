@@ -46,19 +46,19 @@ export default function HomeScreen() {
         <div className="flex items-center gap-3">
           <img src="/tailor-icon.png" alt="" className="w-12 h-12" />
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">
-              AI Resume{" "}
+            <h1 className="text-xl font-bold tracking-tight text-white leading-tight">
+              Resume{" "}
               <span className="relative inline-block">
-                Tailor
+                Tailored
                 <svg
-                  width="52"
+                  width="66"
                   height="8"
-                  viewBox="0 0 52 8"
+                  viewBox="0 0 66 8"
                   className="absolute left-0"
                   style={{ bottom: "-4px" }}
                 >
                   <path
-                    d="M0 4 Q 6.5 0, 13 4 T 26 4 T 39 4 T 52 4"
+                    d="M0 4 Q 8 0, 16.5 4 T 33 4 T 49.5 4 T 66 4"
                     stroke={theme.accentYellow}
                     strokeWidth="2"
                     fill="none"
@@ -66,6 +66,7 @@ export default function HomeScreen() {
                   />
                 </svg>
               </span>
+              {" "}to JD
             </h1>
             <p className="text-[11px] text-white/80 mt-0.5">Powered by Claude AI</p>
           </div>

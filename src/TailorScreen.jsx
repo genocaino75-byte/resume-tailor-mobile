@@ -119,10 +119,12 @@ export default function TailorScreen() {
     const stepTimer = setTimeout(() => setLoadingStep(1), 1800);
 
     try {
-      const response = await axios.post(`${API_URL}/api/tailor`, {
-        resume,
-        jobDescription,
-      });
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        `${API_URL}/api/tailor`,
+        { resume, jobDescription },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       navigate("/results", {
         state: {
           originalResume: resume,
@@ -132,7 +134,14 @@ export default function TailorScreen() {
       });
     } catch (err) {
       console.error("Tailor request failed:", err);
-      setError("Something went wrong tailoring your resume. Please try again.");
+      if (err.response?.status === 402 && err.response?.data?.paywall) {
+        // Free trial used up — send them to the Paywall instead of an error
+        navigate("/paywall");
+      } else if (err.response?.status === 401) {
+        setError("Your session has expired. Please log in again.");
+      } else {
+        setError("Something went wrong tailoring your resume. Please try again.");
+      }
     } finally {
       clearTimeout(stepTimer);
       setLoading(false);

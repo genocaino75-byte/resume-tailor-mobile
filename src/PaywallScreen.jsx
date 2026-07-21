@@ -79,7 +79,7 @@ export default function PaywallScreen() {
       >
         <h1 className="text-3xl font-bold mb-1">Go Pro Today</h1>
         <p className="text-sm mb-6" style={{ color: theme.mutedLight }}>
-          Unlock unlimited resume tailoring.
+          You've used your 2 free tailors. Unlock unlimited to keep going.
         </p>
 
         <div className="space-y-3 mb-6">

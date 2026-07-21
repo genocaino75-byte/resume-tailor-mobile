@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
-
 const theme = {
   background: "#ffffff",
   primary: "#7C3AED",
@@ -10,10 +9,8 @@ const theme = {
   radius: "0.5rem",
   fontSans: "'Sora', sans-serif",
 };
-
 export default function WelcomeScreen() {
   const navigate = useNavigate();
-
   return (
     <div
       className="relative h-screen overflow-hidden flex flex-col"
@@ -31,7 +28,6 @@ export default function WelcomeScreen() {
       >
         <Settings size={26} strokeWidth={2.5} color={theme.primary} />
       </button>
-
       <div className="relative z-10 flex-1 flex flex-col items-center justify-end px-8 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -47,15 +43,16 @@ export default function WelcomeScreen() {
             transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
             style={{ objectFit: "contain", filter: "drop-shadow(0 10px 20px rgba(124,58,237,0.25))" }}
           />
-
           <h1 className="text-4xl font-bold mb-3 leading-tight tracking-tight" style={{ color: theme.primary }}>
             Land Your Next Role
           </h1>
           <p className="text-lg px-4 leading-relaxed" style={{ color: theme.primary, opacity: 0.75 }}>
             AI-powered resume tailoring that matches your experience to any job description.
           </p>
+          <p className="text-sm mt-4 font-medium" style={{ color: theme.primary, opacity: 0.6 }}>
+            Start with 2 free tailors — no card required.
+          </p>
         </motion.div>
-
         <div className="w-full space-y-4">
           <motion.button
             whileTap={{ scale: 0.97 }}

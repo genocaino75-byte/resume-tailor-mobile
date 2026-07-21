@@ -23,13 +23,6 @@ const PLANS = [
     badge: "BEST VALUE",
     icon: InfinityIcon,
   },
-  {
-    id: "single",
-    label: "Single Use",
-    subtext: "One resume tailoring credit",
-    price: "$9.99",
-    icon: FileText,
-  },
 ];
 
 export default function PaywallScreen() {
@@ -86,7 +79,7 @@ export default function PaywallScreen() {
       >
         <h1 className="text-3xl font-bold mb-1">Go Pro Today</h1>
         <p className="text-sm mb-6" style={{ color: theme.mutedLight }}>
-          Choose the plan that suits your needs.
+          Unlock unlimited resume tailoring.
         </p>
 
         <div className="space-y-3 mb-6">

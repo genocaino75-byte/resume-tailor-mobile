@@ -68,7 +68,7 @@ export default function LoginScreen() {
 
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("userEmail", response.data.user.email);
-      navigate("/paywall");
+      navigate("/home");
     } catch (err) {
       console.error("Google sign-in failed:", err);
       setServerError("Google sign-in failed. Please try again.");
@@ -92,7 +92,7 @@ export default function LoginScreen() {
       const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("userEmail", response.data.user.email);
-      navigate("/paywall");
+      navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || "Something went wrong. Please try again.";
       setServerError(message);

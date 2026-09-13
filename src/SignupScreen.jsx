@@ -214,14 +214,6 @@ export default function SignupScreen() {
         <div className="flex flex-col gap-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => alert("Google Sign-In is coming soon!")}
-            className="w-full py-3.5 font-medium"
-            style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
-          >
-            Continue with Google
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
             onClick={() => alert("Apple Sign-In is coming soon!")}
             className="w-full py-3.5 font-medium"
             style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}

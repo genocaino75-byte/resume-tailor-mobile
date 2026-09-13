@@ -15,6 +15,7 @@
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
     "@capgo/capacitor-social-login": "^8.3.37",
+    "@capgo/native-purchases": "^8.6.6",
     "@tailwindcss/vite": "^4.3.2",
     "axios": "^1.18.1",
     "framer-motion": "^12.42.2",

@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Browser } from "@capacitor/browser";
-import { X, FileText, Infinity as InfinityIcon } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
+import { NativePurchases, PURCHASE_TYPE } from "@capgo/native-purchases";
+import axios from "axios";
+import { X, Infinity as InfinityIcon, Loader2 } from "lucide-react";
 
 const theme = {
   primaryDark: "#3B0764",
@@ -14,25 +17,132 @@ const theme = {
   fontSans: "'Sora', sans-serif",
 };
 
-const PLANS = [
-  {
-    id: "lifetime",
-    label: "Lifetime Access",
-    subtext: "Pay once, unlimited tailoring",
-    price: "$25.00",
-    badge: "BEST VALUE",
-    icon: InfinityIcon,
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL;
+
+// Must match the Product ID created in Google Play Console exactly.
+const LIFETIME_PRODUCT_ID = "lifetime_access";
 
 export default function PaywallScreen() {
   const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState("lifetime");
 
-  const handleContinue = () => {
-    // Real payment processing (Google Play Billing) not wired up yet -
-    // for now, continue straight into the app.
-    navigate("/home");
+  const [loading, setLoading] = useState(false);       // purchase in progress
+  const [restoring, setRestoring] = useState(false);   // restore in progress
+  const [error, setError] = useState("");
+  const [price, setPrice] = useState("$25.00");        // fallback until store price loads
+
+  const isNative = Capacitor.isNativePlatform();
+
+  // On mount (native only), fetch the real localized price from the store.
+  useEffect(() => {
+    if (!isNative) return;
+    (async () => {
+      try {
+        const { products } = await NativePurchases.getProducts({
+          productIdentifiers: [LIFETIME_PRODUCT_ID],
+          productType: PURCHASE_TYPE.INAPP,
+        });
+        if (products && products.length > 0 && products[0].priceString) {
+          setPrice(products[0].priceString);
+        }
+      } catch (err) {
+        // Non-fatal: just keep the fallback price. Log for debugging.
+        console.error("Failed to load product price:", err);
+      }
+    })();
+  }, [isNative]);
+
+  // Send a confirmed purchase token to our backend to grant lifetime access.
+  const confirmWithBackend = async (purchaseToken) => {
+    const token = localStorage.getItem("authToken");
+    return axios.post(
+      `${API_URL}/api/billing/confirm`,
+      { purchaseToken, productId: LIFETIME_PRODUCT_ID },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  };
+
+  const handlePurchase = async () => {
+    setError("");
+
+    // In the browser preview there's no Google Play — guard against it.
+    if (!isNative) {
+      setError("Purchases are only available in the installed app.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Launch Google Play's purchase flow. Google validates the payment;
+      // a successful return means the user actually paid.
+      const transaction = await NativePurchases.purchaseProduct({
+        productIdentifier: LIFETIME_PRODUCT_ID,
+        productType: PURCHASE_TYPE.INAPP,
+      });
+
+      const purchaseToken = transaction?.transactionId || transaction?.purchaseToken;
+      if (!purchaseToken) {
+        throw new Error("No purchase token returned.");
+      }
+
+      // Tell our backend to record it and flip has_lifetime.
+      await confirmWithBackend(purchaseToken);
+
+      // Success — into the app.
+      navigate("/home");
+    } catch (err) {
+      console.error("Purchase failed:", err);
+      // User cancelling the Google sheet also throws — treat that quietly.
+      const msg = (err?.message || "").toLowerCase();
+      if (msg.includes("cancel")) {
+        // User backed out; no error message needed.
+      } else if (err.response?.status === 401) {
+        setError("Your session has expired. Please log in again.");
+      } else {
+        setError("Something went wrong with your purchase. You were not charged if it didn't complete.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    setError("");
+
+    if (!isNative) {
+      setError("Restore is only available in the installed app.");
+      return;
+    }
+
+    setRestoring(true);
+    try {
+      // Ask Google Play for this account's existing purchases.
+      await NativePurchases.restorePurchases();
+      const { purchases } = await NativePurchases.getPurchases();
+
+      // Find a lifetime purchase among them.
+      const lifetime = (purchases || []).find(
+        (p) => p.productIdentifier === LIFETIME_PRODUCT_ID || p.productId === LIFETIME_PRODUCT_ID
+      );
+
+      if (!lifetime) {
+        setError("No previous purchase found for this account.");
+        return;
+      }
+
+      const purchaseToken = lifetime.transactionId || lifetime.purchaseToken;
+      if (!purchaseToken) {
+        setError("Couldn't read your previous purchase. Please contact support.");
+        return;
+      }
+
+      await confirmWithBackend(purchaseToken);
+      navigate("/home");
+    } catch (err) {
+      console.error("Restore failed:", err);
+      setError("Couldn't restore your purchase. Please try again.");
+    } finally {
+      setRestoring(false);
+    }
   };
 
   return (
@@ -83,91 +193,82 @@ export default function PaywallScreen() {
         </p>
 
         <div className="space-y-3 mb-6">
-          {PLANS.map((plan) => {
-            const Icon = plan.icon;
-            const isSelected = selectedPlan === plan.id;
-            return (
-              <button
-                key={plan.id}
-                onClick={() => setSelectedPlan(plan.id)}
-                className="relative w-full text-left"
-              >
-                {plan.badge && (
-                  <span
-                    className="absolute -top-2.5 left-4 px-3 py-0.5 rounded-full text-[10px] font-bold z-10"
-                    style={{ backgroundColor: theme.primary, color: "#ffffff" }}
-                  >
-                    {plan.badge}
-                  </span>
-                )}
+          <div className="relative w-full text-left">
+            <span
+              className="absolute -top-2.5 left-4 px-3 py-0.5 rounded-full text-[10px] font-bold z-10"
+              style={{ backgroundColor: theme.primary, color: "#ffffff" }}
+            >
+              BEST VALUE
+            </span>
+            <div
+              className="flex items-center justify-between p-4"
+              style={{
+                backgroundColor: "#ffffff",
+                borderRadius: theme.radius,
+                border: `2px solid ${theme.primary}`,
+              }}
+            >
+              <div className="flex items-center gap-3">
                 <div
-                  className="flex items-center justify-between p-4"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: theme.radius,
-                    border: isSelected ? `2px solid ${theme.primary}` : "2px solid transparent",
-                  }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: theme.primary + "1a" }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: theme.primary + "1a" }}
-                    >
-                      <Icon size={18} color={theme.primary} />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold" style={{ color: theme.primaryDark }}>
-                        {plan.label}
-                      </h3>
-                      <p className="text-xs" style={{ color: "#6B7280" }}>
-                        {plan.subtext}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {plan.originalPrice && (
-                      <p
-                        className="text-xs line-through"
-                        style={{ color: "#9CA3AF" }}
-                      >
-                        {plan.originalPrice}
-                      </p>
-                    )}
-                    <p className="text-lg font-bold" style={{ color: theme.primaryDark }}>
-                      {plan.price}
-                    </p>
-                    {plan.save && (
-                      <p className="text-[11px] font-semibold" style={{ color: "#10B981" }}>
-                        {plan.save}
-                      </p>
-                    )}
-                  </div>
+                  <InfinityIcon size={18} color={theme.primary} />
                 </div>
-              </button>
-            );
-          })}
+                <div>
+                  <h3 className="text-sm font-bold" style={{ color: theme.primaryDark }}>
+                    Lifetime Access
+                  </h3>
+                  <p className="text-xs" style={{ color: "#6B7280" }}>
+                    Pay once, unlimited tailoring
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold" style={{ color: theme.primaryDark }}>
+                  {price}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {error && (
+          <p className="text-sm text-center mb-3" style={{ color: theme.accentYellow }}>
+            {error}
+          </p>
+        )}
 
         <motion.button
           whileTap={{ scale: 0.97 }}
-          onClick={handleContinue}
-          className="w-full py-4 font-bold text-base mb-4"
+          onClick={handlePurchase}
+          disabled={loading || restoring}
+          className="w-full py-4 font-bold text-base mb-4 flex items-center justify-center gap-2"
           style={{
             backgroundColor: theme.accentYellow,
             color: theme.primaryDark,
             borderRadius: theme.radius,
             boxShadow: "0 8px 20px rgba(251,191,36,0.3)",
+            opacity: loading || restoring ? 0.7 : 1,
           }}
         >
-          Continue
+          {loading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Continue"
+          )}
         </motion.button>
 
         <button
-          onClick={() => alert("Restore Purchase will be available once in-app purchases are live.")}
+          onClick={handleRestore}
+          disabled={loading || restoring}
           className="text-center text-sm mb-4"
           style={{ color: theme.mutedLight }}
         >
-          Restore Purchase
+          {restoring ? "Restoring..." : "Restore Purchase"}
         </button>
 
         <div className="flex items-center justify-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>

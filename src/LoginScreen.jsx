@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { SocialLogin } from "@capgo/capacitor-social-login";
 import { ChevronLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -35,47 +34,6 @@ export default function LoginScreen() {
 
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [googleLoading, setGoogleLoading] = useState(false);
-
-  // Initialize the Google Sign-In plugin once when the screen mounts
-  useEffect(() => {
-    SocialLogin.initialize({
-      google: {
-        webClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      },
-    }).catch((err) => console.error("Failed to initialize Google Sign-In:", err));
-  }, []);
-
-  const handleGoogleSignIn = async () => {
-    setServerError("");
-    setGoogleLoading(true);
-
-    try {
-      // Note: not passing "scopes" here - the plugin requires extra native
-      // Android setup for those, and Google returns email/profile by default.
-      const result = await SocialLogin.login({
-        provider: "google",
-        options: {},
-      });
-
-      const idToken = result.result?.idToken;
-      if (!idToken) {
-        throw new Error("No ID token returned from Google");
-      }
-
-      const API_URL = import.meta.env.VITE_API_URL;
-      const response = await axios.post(`${API_URL}/api/auth/google`, { idToken });
-
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("userEmail", response.data.user.email);
-      navigate("/home");
-    } catch (err) {
-      console.error("Google sign-in failed:", err);
-      setServerError("Google sign-in failed. Please try again.");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -216,15 +174,6 @@ export default function LoginScreen() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleGoogleSignIn}
-            disabled={googleLoading}
-            className="w-full py-3.5 font-medium"
-            style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
-          >
-            {googleLoading ? "Signing in..." : "Continue with Google"}
-          </motion.button>
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => alert("Apple Sign-In is coming soon!")}

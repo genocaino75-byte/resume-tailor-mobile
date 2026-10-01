@@ -93,7 +93,7 @@ export default function LoginScreen() {
               value={email}
               onChange={handleEmailChange}
               placeholder="Email address"
-              className="w-full py-3.5 pl-11 pr-11 text-base outline-none"
+              className="w-full py-3.5 pl-11 pr-4 text-base outline-none"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${emailError ? "#DC2626" : theme.primary}`,
@@ -102,7 +102,6 @@ export default function LoginScreen() {
                 boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
               }}
             />
-            <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           </div>
           {emailError && (
             <p className="text-xs -mt-2 ml-1" style={{ color: "#DC2626" }}>{emailError}</p>
@@ -116,7 +115,7 @@ export default function LoginScreen() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full py-3.5 pl-11 pr-16 text-base outline-none"
+              className="w-full py-3.5 pl-11 pr-12 text-base outline-none"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${theme.primary}`,
@@ -133,7 +132,6 @@ export default function LoginScreen() {
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-            <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           </div>
 
           <button

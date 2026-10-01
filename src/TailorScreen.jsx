@@ -287,9 +287,11 @@ export default function TailorScreen() {
 
         <section className="space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <FileText size={16} color={theme.primary} />
-              <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: theme.primary }}>
+                <FileText size={15} color="#FFFFFF" />
+              </div>
+              <label className="text-sm font-semibold" style={{ color: theme.foreground }}>
                 Your Resume
               </label>
             </div>
@@ -330,9 +332,11 @@ export default function TailorScreen() {
 
         <section className="space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Briefcase size={16} color={theme.primary} />
-              <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: theme.primary }}>
+                <Briefcase size={15} color="#FFFFFF" />
+              </div>
+              <label className="text-sm font-semibold" style={{ color: theme.foreground }}>
                 Job Description
               </label>
             </div>

@@ -36,9 +36,9 @@ function SettingsRow({ item, onClick }) {
       <div className="flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: item.iconBg }}
+          style={{ backgroundColor: theme.primary }}
         >
-          <Icon size={18} color={item.iconColor} />
+          <Icon size={18} color="#FFFFFF" />
         </div>
         <span className="text-sm font-medium" style={{ color: theme.foreground }}>
           {item.label}
@@ -170,9 +170,9 @@ export default function SettingsScreen() {
           >
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: theme.primary + "22" }}
+              style={{ backgroundColor: theme.primary }}
             >
-              <LogOut size={18} color={theme.primary} />
+              <LogOut size={18} color="#FFFFFF" />
             </div>
             <span className="text-sm font-medium" style={{ color: theme.primary }}>
               Log Out
@@ -204,7 +204,7 @@ export default function SettingsScreen() {
           className="text-center text-xs tracking-wide mt-8"
           style={{ color: theme.mutedForeground }}
         >
-          VERSION 1.0.0 (1)
+          VERSION 1.2.0 (11)
         </p>
       </main>
     </div>

@@ -113,7 +113,7 @@ export default function SignupScreen() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Full name"
-              className="w-full py-3.5 pl-11 pr-11 text-base outline-none"
+              className="w-full py-3.5 pl-11 pr-4 text-base outline-none"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${theme.primary}`,
@@ -122,7 +122,6 @@ export default function SignupScreen() {
                 boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
               }}
             />
-            <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
           </div>
 
           <div>
@@ -134,7 +133,7 @@ export default function SignupScreen() {
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="Email address"
-                className="w-full py-3.5 pl-11 pr-11 text-base outline-none"
+                className="w-full py-3.5 pl-11 pr-4 text-base outline-none"
                 style={{
                   backgroundColor: theme.card,
                   border: `2px solid ${emailError ? "#DC2626" : theme.primary}`,
@@ -143,7 +142,6 @@ export default function SignupScreen() {
                   boxShadow: "0 4px 14px rgba(124,58,237,0.12)",
                 }}
               />
-              <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
             </div>
             {emailError && <p className="text-xs mt-1.5 ml-1" style={{ color: "#DC2626" }}>{emailError}</p>}
           </div>
@@ -157,7 +155,7 @@ export default function SignupScreen() {
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Password (min. 10 characters, 2 numbers)"
-                className="w-full py-3.5 pl-11 pr-16 text-base outline-none"
+                className="w-full py-3.5 pl-11 pr-12 text-base outline-none"
                 style={{
                   backgroundColor: theme.card,
                   border: `2px solid ${passwordError ? "#DC2626" : theme.primary}`,
@@ -174,7 +172,6 @@ export default function SignupScreen() {
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-              <img src="/tailor-icon.png" alt="" className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full" style={{ border: `1.5px solid ${theme.primary}` }} />
             </div>
             {passwordError && <p className="text-xs mt-1.5 ml-1" style={{ color: "#DC2626" }}>{passwordError}</p>}
           </div>

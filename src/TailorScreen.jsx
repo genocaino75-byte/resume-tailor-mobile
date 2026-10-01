@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
-import { ArrowLeft, Sparkles, Loader2, Settings, FileText, Briefcase, Cpu, Check } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Settings, FileText, Briefcase, Cpu, Check, Upload } from "lucide-react";
 
 // Point pdf.js at its matching worker version via CDN
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -20,6 +20,48 @@ async function extractPdfText(file) {
     fullText += pageText + "\n\n";
   }
   return fullText.trim();
+}
+
+// Shared parser used by BOTH drag-and-drop (desktop) and the Upload
+// button / native file picker (mobile). Reads .txt, .docx and .pdf
+// and pushes the extracted text into the given setter.
+async function parseFile(file, setter) {
+  if (!file) return;
+
+  const isTxt = file.type === "text/plain" || file.name.endsWith(".txt");
+  const isDocx =
+    file.name.endsWith(".docx") ||
+    file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  const isPdf = file.name.endsWith(".pdf") || file.type === "application/pdf";
+
+  if (isTxt) {
+    try {
+      const text = await file.text();
+      setter(text);
+    } catch (err) {
+      console.error("Failed to read text file:", err);
+      alert("Couldn't read that file. Please try pasting the text instead.");
+    }
+  } else if (isDocx) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      setter(result.value);
+    } catch (err) {
+      console.error("Failed to read .docx file:", err);
+      alert("Couldn't read that Word document. Please try copying and pasting the text instead.");
+    }
+  } else if (isPdf) {
+    try {
+      const text = await extractPdfText(file);
+      setter(text);
+    } catch (err) {
+      console.error("Failed to read PDF file:", err);
+      alert("Couldn't read that PDF. Please try copying and pasting the text instead.");
+    }
+  } else {
+    alert("Please choose a .txt, .docx, or .pdf file.");
+  }
 }
 
 const theme = {
@@ -68,46 +110,23 @@ export default function TailorScreen() {
     e.stopPropagation();
     setDragOver(false);
     const file = e.dataTransfer.files[0];
-    if (!file) return;
+    await parseFile(file, setter);
+  };
 
-    const isTxt = file.type === "text/plain" || file.name.endsWith(".txt");
-    const isDocx =
-      file.name.endsWith(".docx") ||
-      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-
-    const isPdf = file.name.endsWith(".pdf") || file.type === "application/pdf";
-
-    if (isTxt) {
-      const reader = new FileReader();
-      reader.onload = (event) => setter(event.target.result);
-      reader.readAsText(file);
-    } else if (isDocx) {
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.extractRawText({ arrayBuffer });
-        setter(result.value);
-      } catch (err) {
-        console.error("Failed to read .docx file:", err);
-        alert("Couldn't read that Word document. Please try copying and pasting the text instead.");
-      }
-    } else if (isPdf) {
-      try {
-        const text = await extractPdfText(file);
-        setter(text);
-      } catch (err) {
-        console.error("Failed to read PDF file:", err);
-        alert("Couldn't read that PDF. Please try copying and pasting the text instead.");
-      }
-    } else {
-      alert("Only .txt, .docx, and .pdf files can be dropped directly.");
-    }
+  // Native file picker (mobile-friendly): opens the phone's Files /
+  // iCloud / Drive picker. Resets the input value so picking the same
+  // file twice still fires onChange.
+  const handleFilePick = async (e, setter) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    await parseFile(file, setter);
   };
 
   const [loadingStep, setLoadingStep] = useState(0);
 
   const handleTailor = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
-      setError("Please paste both your resume and the job description.");
+      setError("Please add both your resume and the job description.");
       return;
     }
     setError("");
@@ -262,15 +281,30 @@ export default function TailorScreen() {
             Optimize for Success
           </h2>
           <p className="text-xs max-w-xs mx-auto" style={{ color: theme.mutedForeground }}>
-            Paste your resume and the job description below.
+            Upload or paste your resume and the job description below.
           </p>
         </section>
 
         <section className="space-y-2">
-          <div className="flex items-center gap-1.5">
-            <FileText size={16} color={theme.primary} />
-            <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
-              Your Resume
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <FileText size={16} color={theme.primary} />
+              <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
+                Your Resume
+              </label>
+            </div>
+            <label
+              className="flex items-center gap-1 text-xs font-semibold cursor-pointer active:opacity-70"
+              style={{ color: theme.primary }}
+            >
+              <Upload size={14} />
+              Upload file
+              <input
+                type="file"
+                accept=".txt,.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                onChange={(e) => handleFilePick(e, setResume)}
+                style={{ display: "none" }}
+              />
             </label>
           </div>
           <textarea
@@ -279,8 +313,8 @@ export default function TailorScreen() {
             onDragOver={(e) => { e.preventDefault(); setDragOverResume(true); }}
             onDragLeave={() => setDragOverResume(false)}
             onDrop={(e) => handleFileDrop(e, setResume, setDragOverResume)}
-            placeholder="Paste your resume here, or drag a .txt file..."
-            className="w-full text-sm outline-none"
+            placeholder="Tap “Upload file” to choose a PDF or Word resume, or paste it here..."
+            className="w-full text-base outline-none"
             style={{
               backgroundColor: dragOverResume ? theme.secondary : theme.card,
               border: `2px ${dragOverResume ? "dashed" : "solid"} ${theme.primary}`,
@@ -295,10 +329,25 @@ export default function TailorScreen() {
         </section>
 
         <section className="space-y-2">
-          <div className="flex items-center gap-1.5">
-            <Briefcase size={16} color={theme.primary} />
-            <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
-              Job Description
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Briefcase size={16} color={theme.primary} />
+              <label className="text-xs font-medium" style={{ color: theme.mutedForeground }}>
+                Job Description
+              </label>
+            </div>
+            <label
+              className="flex items-center gap-1 text-xs font-semibold cursor-pointer active:opacity-70"
+              style={{ color: theme.primary }}
+            >
+              <Upload size={14} />
+              Upload file
+              <input
+                type="file"
+                accept=".txt,.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                onChange={(e) => handleFilePick(e, setJobDescription)}
+                style={{ display: "none" }}
+              />
             </label>
           </div>
           <textarea
@@ -307,8 +356,8 @@ export default function TailorScreen() {
             onDragOver={(e) => { e.preventDefault(); setDragOverJD(true); }}
             onDragLeave={() => setDragOverJD(false)}
             onDrop={(e) => handleFileDrop(e, setJobDescription, setDragOverJD)}
-            placeholder="Paste job description here, or drag a .txt file..."
-            className="w-full text-sm outline-none"
+            placeholder="Tap “Upload file” to choose a file, or paste the job description here..."
+            className="w-full text-base outline-none"
             style={{
               backgroundColor: dragOverJD ? theme.secondary : theme.card,
               border: `2px ${dragOverJD ? "dashed" : "solid"} ${theme.primary}`,

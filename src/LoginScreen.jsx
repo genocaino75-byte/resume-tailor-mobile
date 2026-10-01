@@ -93,7 +93,7 @@ export default function LoginScreen() {
               value={email}
               onChange={handleEmailChange}
               placeholder="Email address"
-              className="w-full py-3.5 pl-11 pr-11 text-sm outline-none"
+              className="w-full py-3.5 pl-11 pr-11 text-base outline-none"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${emailError ? "#DC2626" : theme.primary}`,
@@ -116,7 +116,7 @@ export default function LoginScreen() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full py-3.5 pl-11 pr-16 text-sm outline-none"
+              className="w-full py-3.5 pl-11 pr-16 text-base outline-none"
               style={{
                 backgroundColor: theme.card,
                 border: `2px solid ${theme.primary}`,
@@ -166,23 +166,6 @@ export default function LoginScreen() {
             {loading ? "Logging in..." : "Log In"}
           </motion.button>
         </form>
-
-        <div className="flex items-center gap-3 my-8">
-          <div className="flex-1 h-px" style={{ backgroundColor: theme.border }} />
-          <span className="text-xs" style={{ color: theme.mutedForeground }}>or continue with</span>
-          <div className="flex-1 h-px" style={{ backgroundColor: theme.border }} />
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => alert("Apple Sign-In is coming soon!")}
-            className="w-full py-3.5 font-medium"
-            style={{ backgroundColor: theme.secondary, borderRadius: theme.radius, color: theme.foreground }}
-          >
-            Continue with Apple
-          </motion.button>
-        </div>
 
         <p className="text-center text-sm mt-8" style={{ color: theme.mutedForeground }}>
           Don't have an account?{" "}

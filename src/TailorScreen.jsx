@@ -244,7 +244,7 @@ export default function TailorScreen() {
     >
       <header
         className="sticky top-0 z-10 backdrop-blur-md border-b px-4 py-2.5 flex items-center justify-between"
-        style={{ backgroundColor: theme.background + "cc", borderColor: theme.border }}
+        style={{ backgroundColor: theme.background + "cc", borderColor: theme.border, paddingTop: "calc(env(safe-area-inset-top) + 0.625rem)" }}
       >
         <div className="flex items-center gap-2.5">
           <motion.button

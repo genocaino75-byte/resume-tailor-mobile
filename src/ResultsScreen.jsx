@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 import { Sparkles, Download, Check, Loader2, Home, ArrowLeft, History, FileText } from "lucide-react";
 
 const theme = {
@@ -20,6 +23,20 @@ const theme = {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Convert a Blob to a base64 string (without the data: prefix) for Capacitor Filesystem.
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      const base64 = typeof result === "string" ? result.split(",")[1] || "" : "";
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 export default function ResultsScreen() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +45,14 @@ export default function ResultsScreen() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [statusMsg, setStatusMsg] = useState("");
+  const [statusError, setStatusError] = useState(false);
+
+  const flashStatus = (msg, isError = false) => {
+    setStatusMsg(msg);
+    setStatusError(isError);
+    setTimeout(() => setStatusMsg(""), 3000);
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -44,9 +69,11 @@ export default function ResultsScreen() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      flashStatus("Saved to your history");
+      setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       console.error("Save failed:", err);
+      flashStatus("Couldn't save. Please try again.", true);
     } finally {
       setSaving(false);
     }
@@ -60,21 +87,46 @@ export default function ResultsScreen() {
     try {
       const endpoint = format === "pdf" ? "generate-pdf" : "generate-docx";
       const extension = format === "pdf" ? "pdf" : "docx";
+      const fileName = `tailored_resume.${extension}`;
 
       const response = await axios.post(
         `${API_URL}/api/${endpoint}`,
         { resumeText, jobTitle: "", company: "" },
         { responseType: "blob" }
       );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `tailored_resume.${extension}`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      if (Capacitor.isNativePlatform()) {
+        // Native (iOS/Android): write the file to the device, then open the
+        // system share sheet so the user can Save to Files, email, AirDrop, etc.
+        const base64 = await blobToBase64(response.data);
+        const written = await Filesystem.writeFile({
+          path: fileName,
+          data: base64,
+          directory: Directory.Cache,
+        });
+        await Share.share({
+          title: "Tailored Resume",
+          files: [written.uri],
+          dialogTitle: "Save or share your resume",
+        });
+      } else {
+        // Web: trigger a normal browser download.
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      }
     } catch (err) {
       console.error("Export failed:", err);
+      // A user cancelling the share sheet also lands here on some platforms —
+      // only surface a message when it's a real failure.
+      if (!(err && typeof err.message === "string" && err.message.toLowerCase().includes("cancel"))) {
+        flashStatus("Couldn't export. Please try again.", true);
+      }
     } finally {
       setExporting(false);
     }
@@ -106,8 +158,8 @@ export default function ResultsScreen() {
       style={{ backgroundColor: theme.background, fontFamily: theme.fontSans }}
     >
       <header
-        className="border-b px-3.5 py-2.5 flex items-center justify-between"
-        style={{ backgroundColor: theme.card, borderColor: theme.border }}
+        className="border-b px-3.5 pb-2.5 flex items-center justify-between"
+        style={{ backgroundColor: theme.card, borderColor: theme.border, paddingTop: "calc(env(safe-area-inset-top) + 0.625rem)" }}
       >
         <div className="flex items-center gap-2">
           <div
@@ -156,6 +208,20 @@ export default function ResultsScreen() {
           </button>
         </div>
       </header>
+
+      {/* Transient status message (save/export feedback) */}
+      {statusMsg && (
+        <div
+          className="px-3.5 py-2 text-xs font-medium text-center flex items-center justify-center gap-1.5"
+          style={{
+            backgroundColor: statusError ? "#FEE2E2" : "#ECFDF5",
+            color: statusError ? "#DC2626" : theme.success,
+          }}
+        >
+          {!statusError && <Check size={13} />}
+          {statusMsg}
+        </div>
+      )}
 
       {/* Export format picker */}
       {showExportPicker && (
@@ -209,7 +275,7 @@ export default function ResultsScreen() {
         <textarea
           value={resumeText}
           onChange={(e) => setResumeText(e.target.value)}
-          className="w-full text-sm outline-none resize-none"
+          className="w-full text-base outline-none resize-none"
           style={{
             backgroundColor: theme.card,
             border: `2px solid ${theme.primary}`,

@@ -92,7 +92,7 @@ export default function SettingsScreen() {
     >
       <header
         className="sticky top-0 z-10 backdrop-blur-md border-b px-5 py-4 flex items-center justify-between"
-        style={{ backgroundColor: theme.background + "cc", borderColor: theme.border }}
+        style={{ backgroundColor: theme.background + "cc", borderColor: theme.border, paddingTop: "calc(env(safe-area-inset-top) + 0.625rem)" }}
       >
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} style={{ color: theme.foreground }}>

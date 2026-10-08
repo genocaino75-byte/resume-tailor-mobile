@@ -28,7 +28,7 @@ export default function PaywallScreen() {
   const [loading, setLoading] = useState(false);       // purchase in progress
   const [restoring, setRestoring] = useState(false);   // restore in progress
   const [error, setError] = useState("");
-  const [price, setPrice] = useState("$25.00");        // fallback until store price loads
+  const [price, setPrice] = useState(null);            // null until the real store price loads (no hardcoded fallback)
 
   const isNative = Capacitor.isNativePlatform();
 
@@ -226,7 +226,7 @@ export default function PaywallScreen() {
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold" style={{ color: theme.primaryDark }}>
-                  {price}
+                  {price ? price : <Loader2 size={18} className="animate-spin" style={{ color: theme.primaryDark }} />}
                 </p>
               </div>
             </div>

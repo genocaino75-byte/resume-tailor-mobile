@@ -204,7 +204,7 @@ export default function SettingsScreen() {
           className="text-center text-xs tracking-wide mt-8"
           style={{ color: theme.mutedForeground }}
         >
-          VERSION 1.4.0 (13)
+          VERSION 1.4.3 (16)
         </p>
       </main>
     </div>

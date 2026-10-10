@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,13 @@ const theme = {
 
 export default function SplashScreen() {
   const navigate = useNavigate();
+
+  // Auto-advance to the welcome screen so the app never appears stuck on the
+  // splash. Tapping the icon still skips ahead immediately.
+  useEffect(() => {
+    const timer = setTimeout(() => navigate("/welcome"), 2000);
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div
@@ -41,6 +49,16 @@ export default function SplashScreen() {
           Resume Tailored to JD
         </h1>
       </motion.button>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.6 }}
+        className="absolute bottom-16 text-sm"
+        style={{ color: theme.primary }}
+      >
+        Tap to continue
+      </motion.p>
     </div>
   );
 }

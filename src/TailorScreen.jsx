@@ -156,6 +156,9 @@ export default function TailorScreen() {
       if (err.response?.status === 402 && err.response?.data?.paywall) {
         // Free trial used up — send them to the Paywall instead of an error
         navigate("/paywall");
+      } else if (err.response?.status === 403 && err.response?.data?.emailUnverified) {
+        // Email not verified yet — send them to the verification screen
+        navigate("/verify-email");
       } else if (err.response?.status === 401) {
         setError("Your session has expired. Please log in again.");
       } else {

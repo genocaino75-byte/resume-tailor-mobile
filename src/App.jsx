@@ -10,6 +10,7 @@ import ResultsScreen from "./ResultsScreen";
 import ProfileScreen from "./ProfileScreen";
 import PaywallScreen from "./PaywallScreen";
 import SettingsScreen from "./SettingsScreen";
+import VerifyEmailScreen from "./VerifyEmailScreen";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/paywall" element={<PaywallScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
+        <Route path="/verify-email" element={<VerifyEmailScreen />} />
       </Routes>
     </BrowserRouter>
   );

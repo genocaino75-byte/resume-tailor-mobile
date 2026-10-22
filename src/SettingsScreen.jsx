@@ -2,7 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Browser } from "@capacitor/browser";
+import { Capacitor } from "@capacitor/core";
 import { ChevronLeft, Star, Info, Shield, FileText, Phone, LogOut, Trash2, Loader2 } from "lucide-react";
+
+// Where "Rate Us" sends the user, per platform.
+const STORE_URL = {
+  android: "https://play.google.com/store/apps/details?id=com.paulcain.resumetailor",
+  ios: "https://apps.apple.com/app/id6818058418?action=write-review",
+};
 
 const theme = {
   background: "#F9FAFB",
@@ -123,8 +130,10 @@ export default function SettingsScreen() {
                 onClick={() => {
                   if (item.id === "help") {
                     Browser.open({ url: "https://genocaino75-byte.github.io/resume-tailor-mobile/help-center.html" });
+                  } else if (item.id === "rate") {
+                    const platform = Capacitor.getPlatform();
+                    Browser.open({ url: STORE_URL[platform] || STORE_URL.android });
                   }
-                  // Rate Us will be wired up once the app has a real Play Store listing.
                 }}
               />
             ))}
@@ -204,7 +213,7 @@ export default function SettingsScreen() {
           className="text-center text-xs tracking-wide mt-8"
           style={{ color: theme.mutedForeground }}
         >
-          VERSION 1.4.3 (16)
+          VERSION 1.4.5 (18)
         </p>
       </main>
     </div>
